@@ -1,0 +1,2 @@
+# TheGreatFinChallenge
+Dotnet Core project 
