@@ -1,0 +1,182 @@
+﻿@model TheGreatFinChallenge.Models.Views.SettingsView;
+@{
+    ViewData["Title"] = "Account Settings";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+
+    var returnUrl = ViewData["ReturnUrl"] as string;
+    var pError1 = TempData["PasswordError"] as string;
+    var pError2 = TempData["NewPasswordError"] as string;
+    var pError3 = TempData["PasswordRequirementsError"] as string;
+}
+@{
+    if (string.IsNullOrEmpty(returnUrl)) returnUrl = "Account_Settings";
+}
+
+@section Scripts{
+    <script src="~/js/settings.js"></script>
+}
+
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-xl-12 mx-auto">
+            <h1 class="h3 mb-0 text-gray-800">Your Settings, @Model.CurrentUser.FirstName</h1>
+            <div class="my-4">
+                <form asp-controller="Account" asp-action="UpdateSettings" asp-route-returnUrl="@System.Net.WebUtility.UrlEncode(returnUrl)" method="post">
+                    <hr class="my-4" />
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="firstname">First name</label>
+                            <input name="firstName" type="text" id="firstName" class="form-control" placeholder="@Model.CurrentUser.FirstName" value="@Model.CurrentUser.FirstName" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="lastname">Last name</label>
+                            <input name="lastName" type="text" id="lastName" class="form-control" placeholder="@Model.CurrentUser.LastName" value="@Model.CurrentUser.LastName" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail">Email</label>
+                            <input name="email" type="email" class="form-control" id="inputEmail" placeholder="@Model.CurrentUser.Email" value="@Model.CurrentUser.Email" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="departmentId">Department</label>
+                            <select name="departmentId" class="form-control" required>
+                                <option value="">-- Choose a department --</option>
+                                @foreach (var d in Model.Departments)
+                                {
+                                    <optgroup label="-- @(d.Key.Name) --">
+                                        @foreach (var dep in d.Value)
+                                        {
+                                            if (dep == Model.CurrentUser.Department)
+                                            {
+                                                <option selected value="@dep.DepartmentId">@dep.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@dep.DepartmentId">@dep.Name</option>
+                                            }
+                                        }
+                                    </optgroup>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row mx-0">
+                        <div class="form-check">
+                            <input type="checkbox" value="true" class="form-check-input" id="GDPR" name="gdpr" @(Model.CurrentUser.Gdpr ? "checked" : "")>
+                            <label for="GDPR" class="form-check-label">
+                                I declare my consent to publicly display my activities across departments
+                                within the same directorate.
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="inputPassword1">Old Password</label>
+                                @if (!string.IsNullOrEmpty(pError1))
+                                {
+                                    <input name="oldPassword" type="password" class="form-control is-invalid" id="inputPassword1" />
+                                    <small id="passwordHelp1" class="form-text invalid-feedback">@pError1</small>
+                                }
+                                else
+                                {
+                                    <input name="oldPassword" type="password" class="form-control" id="inputPassword1" />
+                                }
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword2">New Password</label>
+                                @if (!string.IsNullOrEmpty(pError2))
+                                {
+                                    <input name="password" type="password" class="form-control is-invalid" id="inputPassword2" aria-describedby="passwordHelp2" />
+                                    <small id="passwordHelp2" class="form-text invalid-feedback">@pError2</small>
+                                }
+                                else if (!string.IsNullOrEmpty(pError3))
+                                {
+                                    <input name="password" type="password" class="form-control is-invalid" id="inputPassword2" aria-describedby="passwordHelp2" />
+                                    <small id="passwordHelp2" class="form-text invalid-feedback">@pError3</small>
+                                }
+                                else
+                                {
+                                    <input name="password" type="password" class="form-control" id="inputPassword2" />
+                                }
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword3">Confirm Password</label>
+                                @if (!string.IsNullOrEmpty(pError2))
+                                {
+                                    <input name="passwordConfirmed" type="password" class="form-control is-invalid" id="inputPassword3" aria-describedby="passwordHelp3" />
+                                    <small id="passwordHelp3" class="form-text invalid-feedback">@pError2</small>
+                                }
+                                else if (!string.IsNullOrEmpty(pError3))
+                                {
+                                    <input name="passwordConfirmed" type="password" class="form-control is-invalid" id="inputPassword3" aria-describedby="passwordHelp3" />
+                                    <small id="passwordHelp3" class="form-text invalid-feedback">@pError3</small>
+                                }
+                                else
+                                {
+                                    <input name="passwordConfirmed" type="password" class="form-control" id="inputPassword3" />
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <p class="mb-2">Password requirements</p>
+                                <p class="small text-muted mb-2">To create a new password, you have to meet the following requirements:</p>
+                                <ul class="small @(!string.IsNullOrEmpty(pError3)?"text-danger":"text-muted")  pl-4 mb-0">
+                                    <li>Minimum 8 character</li>
+                                    <li>At least one special character</li>
+                                    <li>At least one number</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">Save Change</button>
+                </form>
+            </div>
+
+            @if (Model.CurrentUser.Admin)
+            {
+                <hr class="my-4" />
+                <h1 class="h3 mb-0 text-gray-800">Admin section</h1>
+                <div class="my-4">
+                    <form asp-controller="Account" asp-action="UpdateChallengeDates" asp-route-returnUrl="@System.Net.WebUtility.UrlEncode(returnUrl)" asp-route-directorateId="@Model.CurrentUser.Department.DirectorateId" method="post">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="startDate">Start date of the challenge</label>
+                                <input name="startDate" type="datetime-local" id="startDate" class="form-control" value="@Model.CurrentUser.Department.Directorate.ChallengeStartDate?.ToString("yyyy-MM-ddTHH:mm")" />
+
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="endDate">End date of the challenge</label>
+                                <input name="endDate" type="datetime-local" id="endDate" class="form-control" value="@Model.CurrentUser.Department.Directorate.ChallengeEndDate?.ToString("yyyy-MM-ddTHH:mm")" />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">Save dates of the challenge</button>
+                    </form>
+                </div>
+                <div class="my-4">
+                    <form asp-controller="Account" asp-action="ResetPasswordOfUser" asp-route-returnUrl="@System.Net.WebUtility.UrlEncode(returnUrl)" asp-route-userId="@Model.CurrentUser.Department.DirectorateId" method="post">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="email">Email</label>
+                                <input name="email" type="email" id="email" class="form-control" placeholder="Email" required />
+
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="firstName">First name</label>
+                                <input name="firstName" type="text" id="firstName" class="form-control" placeholder="First Name" required />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-outline-danger">Reset password</button>
+                    </form>
+                </div>
+                //TODO: Disciplines met mogelijkheid tot toevoegen ervan
+                //TODO: ActivityTypes met mogelijkheid tot toevoegen ervan
+            }
+        </div>
+    </div>
+</div>

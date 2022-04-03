@@ -1,0 +1,387 @@
+﻿@model TheGreatFinChallenge.Models.Views.DepartmentsView
+@{
+    ViewData["Title"] = "Groups";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+
+    var routeUrl = Url.RouteUrl(ViewContext.RouteData.Values);
+    var qsPath = ViewContext.HttpContext.Request.QueryString.Value;
+    var url = $"{routeUrl}{qsPath}";
+}
+
+@section Styles{
+    <link href="~/css/group.css" rel="stylesheet" type="text/css" />
+}
+
+@section Scripts{
+    <script>
+        var lineChartLabels = @Json.Serialize(Model.LineChartLabels);
+        var lineChartData = @Json.Serialize(Model.LineChartData);
+
+        var userRankingChartData = @Json.Serialize(Model.UserRankingChartData);
+        var groupRankingChartData = @Json.Serialize(Model.GroupRankingChartData);
+
+        _departmentDateCallback = false;
+        _userDateCallback = false;
+        _groupDateCallback = false;
+    </script>
+    <script src="~/js/group.js"></script>
+    <script>
+        const queryString = window.location.search;
+        //console.log(queryString);
+
+        const urlParams = new URLSearchParams(queryString);
+        const groupId = urlParams.get('DepartmentId');
+        if (groupId == null) $("#header_@Model.CurrentUser.DepartmentId").click();
+        else $(`#header_${groupId}`).click();
+        //console.log(groupId);
+    </script>
+    <script src="~/lib/chart.js/chart.js"></script>
+    <script src="~/js/charts/chart-area-departments.js"></script>
+}
+
+<div class="container-fluid">
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">The User-Ranking, @Model.CurrentUser.FirstName</h1>
+    </div>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4" id="headers_userRanking">
+                @{ int i = 0; }
+                @foreach (var header in Model.RankingChartHeaders)
+                {
+                    <div onclick="changeDataOfUserRanking(@i, @(header == Model.RankingChartHeaders.Last() ? 0 : i + 1))" style="cursor:pointer; user-select:none;" class="UserRankingChartHeaders card-header py-3 flex-row align-items-center justify-content-between hoverHeader @(++i == 1 ? "d-flex" : "d-none")">
+                        <h6 class="m-0 font-weight-bold text-primary">@header</h6>
+                    </div>
+                }
+
+                <div class="card-body d-flex">
+                    <div class="chart-area col-xl-9">
+                        <canvas class="lineCharts" id="userRankChart"></canvas>
+                    </div>
+                    <div class="chart-area col-xl-3">
+                        <div class="userRankingTables">
+                            @{ i = 0;}
+                            <table class="table table-hover table-sm mb-0" id="userRankingTables_@(i)">
+                                <thead>
+                                    <tr>
+                                        <th style="user-select:none;" scope="col">User</th>
+                                        <th style="user-select:none;" scope="col">Activities</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var u in Model.UserRankingData[i].OrderByDescending(u => u.TotalActivities))
+                                    {
+                                        <tr>
+                                            <td scope="row">@(u.FirstName) @(u.LastName[0]).</td>
+                                            <td>@u.TotalActivities</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <table class="table table-hover table-sm mb-0 d-none" id="userRankingTables_@(++i)">
+                                <thead>
+                                    <tr>
+                                        <th style="user-select:none;" scope="col">User</th>
+                                        <th style="user-select:none;" scope="col">Calories</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var u in Model.UserRankingData[i].OrderByDescending(u => u.TotalCalories))
+                                    {
+                                        <tr>
+                                            <td scope="row">@(u.FirstName) @(u.LastName[0]).</td>
+                                            <td>@u.TotalCalories</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <table class="table table-hover table-sm mb-0 d-none" id="userRankingTables_@(++i)">
+                                <thead>
+                                    <tr>
+                                        <th style="user-select:none;" scope="col">User</th>
+                                        <th style="user-select:none;" scope="col">Distance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var u in Model.UserRankingData[i].OrderByDescending(u => u.TotalDistance))
+                                    {
+                                        <tr>
+                                            <td scope="row">@(u.FirstName) @(u.LastName[0]).</td>
+                                            <td>@u.TotalDistance</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <table class="table table-hover table-sm mb-0 d-none" id="userRankingTables_@(++i)">
+                                <thead>
+                                    <tr>
+                                        <th style="user-select:none;" scope="col">User</th>
+                                        <th style="user-select:none;" scope="col">Duration</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var u in Model.UserRankingData[i].OrderByDescending(u => u.TotalDuration))
+                                    {
+                                        <tr>
+                                            <td scope="row">@(u.FirstName) @(u.LastName[0]).</td>
+                                            <td>@String.Format("{0}d {1:D2}:{2:D2}", u.TotalDuration.Days, u.TotalDuration.Hours, u.TotalDuration.Minutes)</td>
+                                            @*<td>@u.TotalDuration.ToString(@"d \d hh\:mm")</td>*@
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-5"></div>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">The Group-Ranking, @Model.CurrentUser.FirstName</h1>
+    </div>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4" id="headers_groupRanking">
+                @{ i = 0; }
+                @foreach (var header in Model.RankingChartHeaders)
+                {
+                    <div onclick="changeDataOfGroupRanking(@i, @(header == Model.RankingChartHeaders.Last() ? 0 : i + 1))" style="cursor:pointer; user-select:none;" class="GroupRankingChartHeaders card-header py-3 flex-row align-items-center justify-content-between hoverHeader @(++i == 1 ? "d-flex" : "d-none")">
+                        <h6 class="m-0 font-weight-bold text-primary">@header</h6>
+                    </div>
+                }
+                <div class="card-body d-flex">
+                    <div class="chart-area col-xl-9">
+                        <canvas class="lineCharts" id="groupRankChart"></canvas>
+                    </div>
+                    <div class="chart-area col-xl-3">
+                        <div class="groupRankingTables">
+                            @{ i = 0;}
+                            <table class="table table-hover table-sm mb-0" id="groupRankingTables_@(i)">
+                                <thead>
+                                    <tr>
+                                        <th style="user-select:none;" scope="col">Group</th>
+                                        <th style="user-select:none;" scope="col">Activities</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var d in Model.GroupRankingData[i].OrderByDescending(u => u.TotalActivities))
+                                    {
+                                        <tr>
+                                            <td scope="row">@(d.Name)</td>
+                                            <td>@d.TotalActivities</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <table class="table table-hover table-sm mb-0 d-none" id="groupRankingTables_@(++i)">
+                                <thead>
+                                    <tr>
+                                        <th style="user-select:none;" scope="col">User</th>
+                                        <th style="user-select:none;" scope="col">Calories</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var d in Model.GroupRankingData[i].OrderByDescending(u => u.TotalCalories))
+                                    {
+                                        <tr>
+                                            <td scope="row">@(d.Name)</td>
+                                            <td>@d.TotalCalories</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <table class="table table-hover table-sm mb-0 d-none" id="groupRankingTables_@(++i)">
+                                <thead>
+                                    <tr>
+                                        <th style="user-select:none;" scope="col">User</th>
+                                        <th style="user-select:none;" scope="col">Distance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var d in Model.GroupRankingData[i].OrderByDescending(u => u.TotalDistance))
+                                    {
+                                        <tr>
+                                            <td scope="row">@(d.Name)</td>
+                                            <td>@d.TotalDistance</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <table class="table table-hover table-sm mb-0 d-none" id="groupRankingTables_@(++i)">
+                                <thead>
+                                    <tr>
+                                        <th style="user-select:none;" scope="col">User</th>
+                                        <th style="user-select:none;" scope="col">Duration</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var d in Model.GroupRankingData[i].OrderByDescending(u => u.TotalDuration))
+                                    {
+                                        <tr>
+                                            <td scope="row">@(d.Name)</td>
+                                            <td>@String.Format("{0}d {1:D2}:{2:D2}", d.TotalDuration.Days, d.TotalDuration.Hours, d.TotalDuration.Minutes)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-5"></div>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">The Group Data, @Model.CurrentUser.FirstName</h1>
+    </div>
+    <div class="row">
+        <div class="vertical-tabs w-100">
+            <ul class="nav nav-tabs scrollbar" role="tablist" style="overflow-y: auto; max-height: 432px;">
+                @{i = 0; }
+                @foreach (var group in Model.Departments)
+                {
+                    <li class="nav-item mb-0">
+                        <a class="headerOfTable nav-link " data-toggle="tab" href="#tab_@group.DepartmentId" id="header_@group.DepartmentId" role="tab" onclick="checkDataFormat(@(i++))">@group.Name</a>
+                    </li>
+                }
+            </ul>
+            <div class="tab-content w-100">
+                @foreach (var group in Model.Departments)
+                {
+                    <div class="tab-pane groupPanel" id="tab_@group.DepartmentId" role="tabpanel">
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12">
+                                <div class="card shadow mb-4" id="headers_@group.DepartmentId">
+                                    @{ i = 0; }
+                                    @foreach (var header in Model.ChartHeaders)
+                                    {
+                                        <div onclick="changeDataOfDepartment(@i, @(header == Model.ChartHeaders.Last() ? 0 : i + 1), 'headers_@group.DepartmentId')" style="cursor:pointer; user-select:none;" class="lineChartHeaders card-header py-3 flex-row align-items-center justify-content-between hoverHeader @(++i == 1 ? "d-flex" : "d-none")">
+                                            <h6 class="m-0 font-weight-bold text-primary">@header</h6>
+                                        </div>
+                                    }
+
+                                    <div class="card-body">
+                                        <div class="chart-area">
+                                            <canvas class="lineCharts departmentLineCharts" id="lineChart_@group.DepartmentId"></canvas>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-12 mb-4">
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3 d-flex justify-content-between">
+                                        <h6 class="m-0 font-weight-bold text-primary py-0 my-auto pl-1 pr-4 text-nowrap text-center">
+                                            Activities Of Users<br style="content:'';" class="d-block mt-1" /><b>@group.Name</b>
+                                        </h6>
+                                        <ul class="nav nav-pills m-0 p-0 py-1" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" data-toggle="tab" href="#table_@(group.DepartmentId)_1" role="tab">Activities</a>
+                                            </li>
+                                            @{i = 1;}
+                                            @foreach (var dscpln in Model.Disciplines)
+                                            {
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#table_@(group.DepartmentId)_@(++i)" role="tab">@dscpln.Name</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="tab-content" id="myTabContent">
+                                            <div class="tab-pane fade show active" id="table_@(group.DepartmentId)_1" role="tabpanel">
+                                                @if (Model.ActivitiesByDepartments[group].Count > 0)
+                                                {
+                                                    <table class="table table-hover table-sm mb-0" id="tableData_@(group.DepartmentId)_1">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="cursor:pointer; user-select:none;" onclick="sortTable(0, 'tableData_@(group.DepartmentId)_1')" scope="col">User</th>
+                                                                <th style="cursor:pointer; user-select:none;" onclick="sortTable(1, 'tableData_@(group.DepartmentId)_1')" scope="col">Activity Type</th>
+                                                                <th style="cursor:pointer; user-select:none;" onclick="sortTable(2, 'tableData_@(group.DepartmentId)_1')" scope="col">Date</th>
+                                                                <th style="cursor:pointer; user-select:none;" onclick="sortTable(3, 'tableData_@(group.DepartmentId)_1')" scope="col">Duration</th>
+                                                                <th style="cursor:pointer; user-select:none;" onclick="sortTable(4, 'tableData_@(group.DepartmentId)_1')" scope="col">Distance</th>
+                                                                <th style="cursor:pointer; user-select:none;" onclick="sortTable(5, 'tableData_@(group.DepartmentId)_1')" scope="col">Calories</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var a in Model.ActivitiesByDepartments[group].OrderByDescending(a => a.StartTime))
+                                                            {
+                                                                <tr style="cursor:pointer;" id="@a.ActivityId">
+                                                                    <td scope="row">@(a.User.FirstName) @(a.User.LastName[0]).</td>
+                                                                    <td>@a.ActivityType.Name</td>
+                                                                    <td>@(a.User.Gdpr ? a.StartTime.ToString("dd/MM/yyyy - HH:mm") : "NaN")</td>
+                                                                    <td>@(a.Duration.ToString(@"hh\:mm"))</td>
+                                                                    <td>@a.Distance</td>
+                                                                    <td>@a.CalculatedCalories</td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                }
+                                                else
+                                                {
+                                                    <div>No activities found.</div>
+                                                }
+                                            </div>
+
+                                            @{i = 1;}
+                                            @foreach (var discipline in Model.Disciplines)
+                                            {
+                                                <div class="tab-pane fade" id="table_@(group.DepartmentId)_@(++i)" role="tabpanel">
+                                                    @if (Model.ActivitiesByDepartments[group].Where(a => a.ActivityType.Discipline == discipline).ToList().Count > 0)
+                                                    {
+                                                        <table class="table table-hover table-sm mb-0" id="tableData_@(group.DepartmentId)_@(i)">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th style="cursor:pointer; user-select:none;" onclick="sortTable(0, 'tableData_@(group.DepartmentId)_@(i)')" scope="col">User</th>
+                                                                    <th style="cursor:pointer; user-select:none;" onclick="sortTable(1, 'tableData_@(group.DepartmentId)_@(i)')" scope="col">Activity Type</th>
+                                                                    <th style="cursor:pointer; user-select:none;" onclick="sortTable(2, 'tableData_@(group.DepartmentId)_@(i)')" scope="col">Date</th>
+                                                                    <th style="cursor:pointer; user-select:none;" onclick="sortTable(3, 'tableData_@(group.DepartmentId)_@(i)')" scope="col">Duration</th>
+                                                                    <th style="cursor:pointer; user-select:none;" onclick="sortTable(4, 'tableData_@(group.DepartmentId)_@(i)')" scope="col">Distance</th>
+                                                                    <th style="cursor:pointer; user-select:none;" onclick="sortTable(5, 'tableData_@(group.DepartmentId)_@(i)')" scope="col">Calories</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var a in Model.ActivitiesByDepartments[group].Where(a => a.ActivityType.Discipline == discipline).OrderByDescending(a => a.StartTime))
+                                                                {
+                                                                    <tr style="cursor:pointer;" id="@a.ActivityId">
+                                                                        <td scope="row">@(a.User.FirstName) @(a.User.LastName[0]).</td>
+                                                                        <td>@a.ActivityType.Name</td>
+                                                                        <td>@(a.User.Gdpr ? a.StartTime.ToString("dd/MM/yyyy - HH:mm") : "NaN")</td>
+                                                                        <td>@(a.Duration.ToString(@"hh\:mm"))</td>
+                                                                        <td>@a.Distance</td>
+                                                                        <td>@a.CalculatedCalories</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div>No activities found.</div>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

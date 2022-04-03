@@ -1,0 +1,18 @@
+﻿.backgroundImg {
+    background: url(../img/loginBackground.jpg) no-repeat center center fixed;
+    background-size: cover;
+}
+
+body {
+    margin: 0 0;
+}
+
+/* Changes the background to white of the footer */
+.footerLogin {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Gives the section a minimum of 1 full screenheight*/ 
+.contentHeight {
+    height: 100vh;
+}
