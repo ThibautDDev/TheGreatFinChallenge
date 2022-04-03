@@ -1,0 +1,220 @@
+﻿@model TheGreatFinChallenge.Models.Views.AccountView;
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+}
+@section Styles{
+    <link href="~/css/dashboard.css" rel="stylesheet" type="text/css" />
+}
+@section Scripts{
+    <script src="~/js/dashboard.js"></script>
+
+    <script>
+        var disciplines = @Json.Serialize(Model.DisciplineNames);
+        var lineChartLabels = @Json.Serialize(Model.LineChartLabels);
+        var lineChartData = @Json.Serialize(Model.LineChartData);
+
+        var pieChartData = @Json.Serialize(Model.PieChartData);
+        var pieChartLabels = @Json.Serialize(Model.PieChartLabels);
+        var pieChartColors = @Json.Serialize(Model.PieChartColors);
+
+        var currentLineChartData = lineChartData["all"];
+    </script>
+    <script src="~/lib/chart.js/Chart.js"></script>
+    <script src="~/js/charts/chart-area.js"></script>
+    <script src="~/js/charts/chart-pie.js"></script>
+    <script src="~/js/sortTable.js"></script>
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Your Dashboard, @Model.CurrentUser.FirstName</h1>
+    </div>
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2" style="user-select:none;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                <b>Total activities</b>
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.CurrentUser.Activities.Where(a => a.StartTime >= Model.ChallengeStartDate && a.EndTime <= Model.ChallengeEndDate).ToList().Count</div>
+                        </div>
+                        <div class="col-auto">
+                            <img style="height: 2.3em; filter: invert(.5);" src="~/img/icons/heart-solid.svg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2" style="user-select:none;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                <b>Total calories burned</b>
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalCalories</div>
+                        </div>
+                        <div class="col-auto">
+                            <img style="height: 2.3em; filter: invert(.5);" src="~/img/icons/flame-solid.svg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div style="cursor:pointer; user-select:none;" class="card border-left-info shadow h-100 py-2">
+                @{ int i = 0;}
+                @foreach (var dpln in Model.Disciplines)
+                {
+                    <div onclick="changeFitnessCard1(@i, @(dpln == Model.Disciplines.Last() ? 0 : i + 1))" class="fitnessCards1 card-body @(i++ == 0 ? "" : "d-none")">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    <b>Activities</b>: @dpln.Name
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.CurrentUser.Activities.Where(a => a.ActivityType.Discipline == dpln).ToList().Count</div>
+                            </div>
+                            <div class="col-auto">
+                                <img style="height: 2.3em; filter: invert(.5);" src="data:image/svg+xml;base64,@System.Convert.ToBase64String(dpln.IconData)">
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div style="cursor:pointer; user-select:none;" class="card border-left-warning shadow h-100 py-2">
+                <div onclick="changeFitnessCard2(0, 1)" class="fitnessCards2 card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                <b>Amount of disciplines</b>
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Disciplines.Count</div>
+                        </div>
+                        <div class="col-auto">
+                            <img style="height: 2.3em; filter: invert(.5);" src="~/img/icons/stopwatch-solid.svg">
+                        </div>
+                    </div>
+                </div>
+                <div onclick="changeFitnessCard2(1, 0)" class="fitnessCards2 card-body d-none">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                <b>Amount of activities</b>
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.ActivityTypes.Count</div>
+                        </div>
+                        <div class="col-auto">
+                            <img style="height: 2.3em; filter: invert(.5);" src="~/img/icons/stopwatch-solid.svg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div onclick="changeData(0, 1)" style="cursor:pointer; user-select:none;" class="lineChartHeaders card-header py-3 d-flex flex-row align-items-center justify-content-between hoverHeader">
+                    <h6 class="m-0 font-weight-bold text-primary">Activities Overview</h6>
+                </div>
+                @{ i = 1;}
+                @foreach (var item in Model.Disciplines)
+                {
+                    <div onclick="changeData(@i, @(item == Model.Disciplines.Last() ? 0 : ++i))" style="cursor:pointer; user-select:none;" class="lineChartHeaders card-header py-3 flex-row align-items-center justify-content-between hoverHeader d-none">
+                        <h6 class="m-0 font-weight-bold text-primary">@item.Name - Activities Overview</h6>
+                    </div>
+                }
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="myAreaChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Diversity Of Activities</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-2 pb-2">
+                        @if (Model.CurrentUser.Activities.Count == 0)
+                        {
+                            <div class="text-center">No activities yet!</div>
+                        }
+                        else
+                        {
+                            <canvas id="myPieChart"></canvas>
+                        }
+
+                    </div>
+                    <div class="mt-2 text-center small">
+                        @foreach (var item in Model.Disciplines)
+                        {
+                            <span class="mr-2 text-nowrap">
+                                <span style="display: inline-block; width: 9px; height: 9px; background-size: cover; -webkit-mask-image: url(/img/icons/circle-solid.svg); mask-image: url(/img/icons/circle-solid.svg); background-color: @(item.Color);"></span> @item.Name
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Activities</h6>
+                </div>
+                <div class="card-body">
+                    @if (Model.CurrentUser.Activities.Where(a => a.StartTime >= Model.ChallengeStartDate && a.EndTime <= Model.ChallengeEndDate).ToList().Count != 0)
+                    {
+                        <table class="table table-hover table-sm mb-0" id="tableAll">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="cursor:pointer; user-select:none;" onclick="sortTable(0, 'tableAll')">Discipline</th>
+                                    <th scope="col" style="cursor:pointer; user-select:none;" onclick="sortTable(1, 'tableAll')">Activity Type</th>
+                                    <th scope="col" style="cursor:pointer; user-select:none;" onclick="sortTable(2, 'tableAll')">Date</th>
+                                    <th scope="col" style="cursor:pointer; user-select:none;" onclick="sortTable(3, 'tableAll')">Duration</th>
+                                    <th scope="col" style="cursor:pointer; user-select:none;" onclick="sortTable(4, 'tableAll')">Distance</th>
+                                    <th scope="col" style="cursor:pointer; user-select:none;" onclick="sortTable(5, 'tableAll')">Calories</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.CurrentUser.Activities.Where(a => a.StartTime >= Model.ChallengeStartDate && a.EndTime <= Model.ChallengeEndDate).OrderByDescending(a => a.StartTime).ToList())
+                                {
+                                    @*<tr style="cursor:pointer;" onclick="location.href='@url/Activity?ActivityId=@item.pk_ActivityID';">*@
+                                    <tr style="cursor:pointer;" onclick="location.href='@Url.Action("Activities", "Account", new { ActivityId = item.ActivityId })'">
+                                        <td>@item.ActivityType.Discipline.Name</td>
+                                        <td>@item.ActivityType.Name</td>
+                                        <td>@item.StartTime.ToString("dd/MM/yyyy - HH:mm")</td>
+                                        <td>@(item.Duration.ToString(@"hh\:mm"))</td>
+                                        <td>@item.Distance</td>
+                                        <td>@item.CalculatedCalories</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div>No recent activities found. Add a new one <a asp-controller="Account" asp-action="CreateActivity">here!</a></div>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

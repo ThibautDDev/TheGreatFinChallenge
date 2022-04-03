@@ -1,0 +1,122 @@
+﻿@model TheGreatFinChallenge.Models.Views.CreateActivityView;
+@{
+    ViewData["Title"] = "Create Activity";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+
+    var returnUrl = ViewData["ReturnUrl"] as string;
+}
+@{
+    if (string.IsNullOrEmpty(returnUrl)) returnUrl = "Account_Activities";
+}
+
+@section scripts{
+    <script>
+        function nxtButton(i) {
+            document.getElementsByClassName("nxtBtn")[i].disabled = false;
+            document.getElementsByClassName("nxtBtn")[i].classList.remove("btn-dark")
+            document.getElementsByClassName("nxtBtn")[i].classList.add("btn-success")
+        }
+
+        function changeActivityTypes(disciplineId, btnI) {
+            nxtButton(btnI);
+
+            var at = document.getElementsByClassName("activityTypes");
+            for (i = 0; i < at.length; i++) {
+                var el = at[i]
+                el.classList.add("d-none")
+                el.classList.remove("d-flex")
+            }
+
+            var el = document.getElementById(`activityType_${disciplineId}`)
+            el.classList.remove("d-none")
+            el.classList.add("d-flex")
+        }
+
+        function nextTab(j) {
+            var tabs = document.getElementsByClassName("tab")
+            for (i = 0; i < tabs.length; i++) {
+                var el = tabs[i]
+                el.classList.add("d-none")
+                el.classList.remove("d-flex")
+            }
+
+            var el = tabs[j]
+            el.classList.remove("d-none")
+            el.classList.add("d-flex")
+        }
+    </script>
+}
+
+@section styles{
+    <link rel="stylesheet" href="~/css/createActivity.css" />
+}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-xl-12 mx-auto">
+            <h1 class="h3 mb-0 text-gray-800">Create A New Activity Here, @Model.CurrentUser.FirstName</h1>
+            <div class="my-4">
+                <hr class="my-4" />
+                <form id="createActivity" asp-controller="Account" asp-action="CreateAndValidateActivity" asp-route-returnUrl="@System.Net.WebUtility.UrlEncode(returnUrl)">
+                    <div class="tab d-flex flex-column">
+                        <h4 class="text-uppercase font-weight-bold text-center" style="color: #2C3E50;letter-spacing: 2px;">Discipline</h4>
+                        <div id="disciplines" class="d-flex flex-row flex-wrap my-2">
+                            @foreach (var dscpln in Model.Disciplines)
+                            {
+                                <div class="flex-grow-1 d-flex justify-content-center flex-column mb-3">
+                                    <label class="d-flex justify-content-center">
+                                        <input type="radio" name="disciplineId" value="@dscpln.DisciplineId" onclick="changeActivityTypes(@dscpln.DisciplineId, 0)" />
+                                        <img style="height: 12em; width:auto;" src="data:image;base64,@System.Convert.ToBase64String(dscpln.ImageData)">
+                                    </label>
+                                    <h5 style="color: #2C3E50;" class="text-center">@dscpln.Name</h5>
+                                </div>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-dark w-25 next align-self-center nxtBtn" disabled onclick="nextTab(1)">Next</button>
+                    </div>
+
+                    <div class="tab d-none flex-column">
+                        <h4 class="text-uppercase font-weight-bold text-center" style="color: #2C3E50;letter-spacing: 2px;">Activity Type</h4>
+                        <div id="disciplines">
+                            @foreach (var dscpln in Model.Disciplines)
+                            {
+                                <div class="d-none activityTypes flex-row flex-wrap my-2" id="activityType_@(dscpln.DisciplineId)">
+                                    @foreach (var act in dscpln.ActivityTypes)
+                                    {
+                                        <div class="flex-grow-1 d-flex justify-content-center flex-column mb-3">
+                                            <label class="d-flex justify-content-center">
+                                                <input type="radio" name="activityTypeId" value="@act.ActivityTypeId" onclick="nxtButton(1)" />
+                                                <img style="height: 12em; width:auto;" src="data:image;base64,@System.Convert.ToBase64String(act.ImageData)">
+                                            </label>
+                                            <h6 style="color: #2C3E50;" class="text-center">@act.Name</h6>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-dark w-25 next align-self-center nxtBtn" disabled onclick="nextTab(2)">Next</button>
+                    </div>
+
+                    <div class="tab d-none flex-column">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="startDate">Start Datetime</label>
+                                <input name="startDate" type="datetime-local" id="startDate" class="form-control" required />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="endDate">End Time</label>
+                                <input name="endDate" type="time" id="endDate" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="form-row justify-content-center">
+                            <div class="form-group col-md-8">
+                                <label for="distance">Distance</label>
+                                <input name="distance" type="number" value="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" lang="fr_FR" id="distance" class="form-control" required />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-25 next align-self-center">Next</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

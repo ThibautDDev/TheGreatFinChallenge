@@ -1,0 +1,138 @@
+﻿@model TheGreatFinChallenge.Models.Views.RegisterView;
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+
+    var returnUrl = ViewData["ReturnUrl"] as string;
+    var pError = TempData["PasswordError"] as string;
+    var eError = TempData["EmailError"] as string;
+    var prError = TempData["PasswordReqError"] as string;
+}
+@{
+    if (string.IsNullOrEmpty(returnUrl))
+    {
+        returnUrl = "Account_Index";
+    }
+}
+
+<div class="d-flex justify-content-center contentHeight">
+    <div class="align-self-center">
+        <div class="p-5 rounded footerLogin">
+            <form asp-controller="Home" asp-action="RegisterUser" asp-route-returnUrl="@System.Net.WebUtility.UrlEncode(returnUrl)" method="post">
+                <h1 class="text-center">Register</h1>
+                <p class="hint-text text-center pb-3">Create your account. It's free and only takes a minute.</p>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col"><input type="text" class="form-control" name="firstName" placeholder="First Name" required="required"></div>
+                        <div class="col"><input type="text" class="form-control" name="lastName" placeholder="Last Name" required="required"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col">
+                            <select name="departmentId" class="form-control" required>
+                                <option value="">-- Choose a department --</option>
+                                @foreach (var d in Model.Departments)
+                                {
+                                    <optgroup label="-- @(d.Key.Name) --">
+                                        @foreach (var dep in d.Value)
+                                        {
+                                            <option value="@dep.DepartmentId">@dep.Name</option>
+                                        }
+                                    </optgroup>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        @if (!string.IsNullOrEmpty(eError))
+                        {
+                        <div class="col">
+                            <input type="email" class="form-control is-invalid" name="email" aria-describedby="emailHelp" placeholder="Email" required="required">
+                            <small id="emailHelp" class="form-text invalid-feedback">@eError</small>
+                            <small id="emailHelp" class="form-text invalid-feedback">Try to login <a asp-controller="Home" asp-action="Register">here</a>.</small>
+                        </div>
+                        }
+                        else
+                        {
+                            <div class="col">
+                                <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="Email" required="required">
+                            </div>
+                        }
+                        @**@
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-8">
+                        @if (!string.IsNullOrEmpty(pError))
+                        {
+                            <div class="form-group">
+                                <input type="password" class="form-control is-invalid" aria-describedby="passwordHelp1" name="password" placeholder="Password" required="required">
+                                <small id="passwordHelp1" class="form-text invalid-feedback">@pError</small>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" aria-describedby="passwordHelp2" class="form-control is-invalid" name="passwordConfirmed" placeholder="Confirm Password" required="required">
+                                <small id="passwordHelp2" class="form-text invalid-feedback">@pError</small>
+                            </div>
+                        }
+                        else if (!string.IsNullOrEmpty(prError))
+                        {
+                            <div class="form-group">
+                                <input type="password" class="form-control is-invalid" aria-describedby="passwordHelp1" name="password" placeholder="Password" required="required">
+                                <small id="passwordHelp1" class="form-text invalid-feedback">@prError</small>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" aria-describedby="passwordHelp2" class="form-control is-invalid" name="passwordConfirmed" placeholder="Confirm Password" required="required">
+                                <small id="passwordHelp2" class="form-text invalid-feedback">@prError</small>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group">
+                                <input type="password" class="form-control" name="password" placeholder="Password" required="required">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" name="passwordConfirmed" placeholder="Confirm Password" required="required">
+                            </div>
+                        }
+                        <div class="form-check mb-4">
+                            <input type="checkbox" value="true" class="form-check-input" id="GDPR" name="gdpr" checked>
+                            <label for="GDPR" class="form-check-label">
+                                I declare my consent to publicly display my activities across departments
+                                within the same directorate.
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <p class="mb-2">Password requirements</p>
+                        <p class="small text-muted mb-2">To create a password, you have to meet the following requirements:</p>
+                        <ul class="small @(!string.IsNullOrEmpty(prError)?"text-danger":"text-muted")  pl-4 mb-0">
+                            <li>Minimum 8 character</li>
+                            <li>At least one special character</li>
+                            <li>At least one number</li>
+                        </ul>
+                    </div>
+                </div>
+
+                @*<div class="form-group">
+                    <div class="form-check">
+                        <input type="checkbox" value="true" class="form-check-input" id="GDPR" name="gdpr" checked>
+                        <label for="GDPR" class="form-check-label">I declare my consent to publicly display my activities across departments 
+                        within the same directorate.</label>
+                    </div>
+                    
+                </div>*@
+
+                <div class="form-group">
+                    <button type="submit" value="register" class="btn btn-success btn-lg w-100">Register Now</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

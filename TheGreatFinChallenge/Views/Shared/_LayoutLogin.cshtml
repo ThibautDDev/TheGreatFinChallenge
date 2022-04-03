@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - The Great Fin Challenge</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/login.css" />
+</head>
+<body>
+    <div class="backgroundImg">
+        <div class="container">
+            @RenderBody()
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalWarningBrowser">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="alert alert-block alert-warning m-0">
+                        <h4>Warning !</h4>
+                        <p id="errorText">
+                            Deze browser wordt momenteel niet ondersteund. Gelieve een Chrome
+                            of Firefox browser te gebruiken voor deze applicatie.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalWarningScreenFormat">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="alert alert-block alert-warning m-0">
+                        <h4>Warning !</h4>
+                        <p id="errorText">
+                            Deze browser heeft een schermverhouding die momenteel nog niet
+                            wordt ondersteund. Gelieve de applicatie in full-screen te gebruiken
+                            of te raadplegen vanop een ander apparaat.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/screenSize.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

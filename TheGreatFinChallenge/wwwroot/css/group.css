@@ -1,0 +1,60 @@
+﻿/*HOVER attribute change*/
+.hover:hover h4 {
+    font-weight: 900 !important;
+    text-decoration: none;
+}
+
+.hover:hover {
+    font-weight: 900 !important;
+    text-decoration: none;
+}
+
+.hoverHeader:hover {
+    background-color: #edf0f7;
+}
+
+
+/*CardFix*/
+.vertical-center {
+    display: flex;
+    align-items: center;
+}
+
+
+/*VerticalTabs*/
+.vertical-tabs{
+    font-size:15px;
+    padding:10px;
+}
+
+.vertical-tabs .nav-tabs .nav-link {
+    border-radius: 0;
+    text-align: center;
+    font-size: 16px;
+    max-height: 80px;
+    width: 135px;
+    white-space: normal!important;
+    overflow: hidden;
+}
+
+.vertical-tabs .nav-tabs .nav-link.active {
+    background-color: #edf0f7;
+}
+
+.vertical-tabs .tab-content>.active{
+    background:#fff;
+    display:block;
+}
+
+.vertical-tabs .nav.nav-tabs{
+    border-bottom:0;
+    display:block;
+    float:left;
+    margin-right:20px;
+    padding-right:15px;
+}
+.vertical-tabs .sv-tab-panel {
+    background: #fff;
+    padding-top: 10px;
+
+}

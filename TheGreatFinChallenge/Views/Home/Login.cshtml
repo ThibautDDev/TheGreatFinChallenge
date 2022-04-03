@@ -1,0 +1,102 @@
+﻿@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+
+    var returnUrl = ViewData["ReturnUrl"] as string;
+    var eError = TempData["EmailError"] as string;
+    var pError = TempData["PasswordError"] as string;
+}
+@{
+    if (string.IsNullOrEmpty(returnUrl))
+    {
+        returnUrl = "Account_Index";
+    }
+}
+
+<div class="d-flex justify-content-center contentHeight">
+    <div class="align-self-center">
+        <div class="p-5 rounded footerLogin">
+            <form asp-controller="Home" asp-action="Validate" asp-route-returnUrl="@System.Net.WebUtility.UrlEncode(returnUrl)" method="post">
+                <h1 class="text-center pb-5">Login</h1>
+                <div class="form-group">
+                    <label for="Email">Email address</label>
+                    @if (!string.IsNullOrEmpty(eError))
+                    {
+                        <input required type="email" name="email" class="form-control is-invalid" id="InputEmail" aria-describedby="emailHelp" placeholder="Enter email" style="width:300px;">
+                        <small id="emailHelp" class="form-text invalid-feedback">@eError</small>
+                        <small id="emailHelp" class="form-text invalid-feedback">Register a new account <a asp-controller="Home" asp-action="Register">here</a>.</small>
+                    }
+                    else
+                    {
+                        <input required type="email" class="form-control" name="email" id="InputEmail" aria-describedby="emailHelp" placeholder="Enter email" style="width:300px;">
+                    }
+                </div>
+                <div class="form-group">
+                    <label for="InputPassword">Password</label>
+                    @if (!string.IsNullOrEmpty(pError))
+                    {
+                        <input required type="password" name="password" class="form-control is-invalid" id="InputPassword" aria-describedby="passwordHelp" placeholder="Password" style="width:300px;">
+                        <small id="passwordHelp" class="form-text invalid-feedback">@pError</small>
+                    }
+                    else
+                    {
+                        <input required type="password" name="password" class="form-control" id="InputPassword" aria-describedby="passwordHelp" placeholder="Password" style="width:300px;">
+                    }
+
+                </div>
+                <button type="submit" value="login" class="btn btn-success btn-lg mt-3 w-100">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@*@{
+        ViewData["Title"] = "Login";
+        Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+        var returnUrl = ViewData["ReturnUrl"] as string;
+        var eError = TempData["EmailError"] as string;
+        var pError = TempData["PasswordError"] as string;
+    }
+    @{
+        if (string.IsNullOrEmpty(returnUrl))
+        {
+            returnUrl = "~/Account";
+        }
+    }
+
+    <div class="d-flex justify-content-center contentHeight">
+        <div class="align-self-center">
+            <div class="p-5 rounded footerLogin">
+                <form action="~/login?ReturnUrl=@System.Net.WebUtility.UrlEncode(returnUrl)" method="post">
+                    <h1 class="text-center pb-5">Login</h1>
+                    <div class="form-group">
+                        <label for="Email">Email address</label>
+                        @if (!string.IsNullOrEmpty(eError))
+                        {
+                            <input required type="email" name="email" class="form-control is-invalid" id="InputEmail" aria-describedby="emailHelp" placeholder="Enter email" style="width:300px;">
+                            <small id="emailHelp" class="form-text invalid-feedback">@eError</small>
+                            <small id="emailHelp" class="form-text invalid-feedback"><a asp-controller="Home" asp-action="Register">Register</a> a new account.</small>
+                        }
+                        else
+                        {
+                            <input required type="email" class="form-control" name="email" id="InputEmail" aria-describedby="emailHelp" placeholder="Enter email" style="width:300px;">
+                        }
+                    </div>
+                    <div class="form-group">
+                        <label for="InputPassword">Password</label>
+                        @if (!string.IsNullOrEmpty(pError))
+                        {
+                            <input required type="password" name="nonHashedPassword" class="form-control is-invalid" id="InputPassword" aria-describedby="passwordHelp" placeholder="Password" style="width:300px;">
+                            <small id="passwordHelp" class="form-text invalid-feedback">@pError</small>
+                        }
+                        else
+                        {
+                            <input required type="password" name="nonHashedPassword" class="form-control" id="InputPassword" aria-describedby="passwordHelp" placeholder="Password" style="width:300px;">
+                        }
+
+                    </div>
+                    <button type="submit" value="login" class="btn btn-success btn-lg mt-3 w-100">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>*@

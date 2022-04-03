@@ -1,0 +1,234 @@
+﻿@model TheGreatFinChallenge.Models.Views.ActivitiesView;
+@{
+    ViewData["Title"] = "Activities";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+
+    var returnUrl = ViewData["ReturnUrl"] as string;
+}
+@{
+    if (string.IsNullOrEmpty(returnUrl)) returnUrl = "Account_Activities";
+}
+
+@section Styles{
+    <link href="~/css/activity.css" rel="stylesheet" type="text/css" />
+}
+
+@section Scripts{
+    <script>
+        const queryString = window.location.search;
+        //console.log(queryString);
+        const urlParams = new URLSearchParams(queryString);
+        const activityId = urlParams.get('ActivityId');
+
+        if (activityId != null) {
+            //console.log("Activity ID:", activityId);
+            var tables = document.getElementsByTagName("table");
+            //console.log(tables);
+            for (var i in tables) {
+                var rows = tables[i].rows;
+                for (var j in rows) {
+                    var id = rows[j].id;
+                    if (id == activityId) {
+                        rows[j].style = "cursor: pointer; background: rgba(0, 123, 255, 0.2);"
+                    }
+                }
+            }
+        }
+
+        function setActivityId(aId, atId, strtDate, endDate, dstnc) {
+            //console.log(aId, strtDate, endDate, dstnc)
+            document.getElementById("edit_activityId").value = aId;
+            document.getElementById("edit_activityTypeId").value = "";
+            document.getElementById(`edit_activityTypeId_${atId}`).selected = true;
+            document.getElementById("edit_startDate").value = strtDate;
+            document.getElementById("edit_endDate").value = endDate;
+            document.getElementById("edit_distance").value = dstnc.replace(",", ".");
+
+            document.getElementById("del_activityId").value = aId;
+        }
+    </script>
+    <script src="~/js/sortTable.js"></script>
+}
+
+<div class="container">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Your Activities, @Model.CurrentUser.FirstName</h1>
+    </div>
+    <div class="row">
+        <div class="col-xl-12 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between">
+                    <h5 class="m-0 font-weight-bold text-primary py-0 my-auto pl-1 pr-4 text-nowrap">
+                        <a class="hover" style="cursor:pointer;" asp-controller="Account" asp-action="CreateActivity">
+                            Add An Activity
+                        </a>
+                    </h5>
+                    <ul class="nav nav-pills m-0 p-0 py-1" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#allPanel" role="tab">All</a>
+                        </li>
+                        @foreach (var discipline in Model.Disciplines)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#@(discipline.NameNormalized)Panel" role="tab">@discipline.Name</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <div class="card-body">
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="allPanel" role="tabpanel">
+                            @if (Model.CurrentUser.Activities.Count > 0)
+                            {
+                                <table class="table table-hover table-sm mb-0" id="tableAll">
+                                    <thead>
+                                        <tr>
+                                            <th style="cursor:pointer; user-select:none;" onclick="sortTable(0, 'tableAll')" scope="col">Dicipline</th>
+                                            <th style="cursor:pointer; user-select:none;" onclick="sortTable(1, 'tableAll')" scope="col">Activity Type</th>
+                                            <th style="cursor:pointer; user-select:none;" onclick="sortTable(2, 'tableAll')" scope="col">Date</th>
+                                            <th style="cursor:pointer; user-select:none;" onclick="sortTable(3, 'tableAll')" scope="col">Duration</th>
+                                            <th style="cursor:pointer; user-select:none;" onclick="sortTable(4, 'tableAll')" scope="col">Distance</th>
+                                            <th style="cursor:pointer; user-select:none;" onclick="sortTable(5, 'tableAll')" scope="col">Calories</th>
+                                            <th></th>
+                                        </tr>
+
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var a in Model.CurrentUser.Activities.OrderByDescending(a => a.StartTime))
+                                        {
+                                            <tr style="cursor:pointer;" id="@a.ActivityId" onclick="setActivityId(@a.ActivityId, @a.ActivityTypeId, '@a.StartTime.ToString("yyyy-MM-ddTHH:mm")', '@a.EndTime.ToString("HH:mm")', '@a.Distance');">
+                                                <td data-toggle="modal" data-target="#modalEditActivity" scope="row">@a.ActivityType.Discipline.Name</td>
+                                                <td data-toggle="modal" data-target="#modalEditActivity">@a.ActivityType.Name</td>
+                                                <td data-toggle="modal" data-target="#modalEditActivity">@a.StartTime.ToString("dd/MM/yyyy - HH:mm")</td>
+                                                <td data-toggle="modal" data-target="#modalEditActivity">@(a.Duration.ToString(@"hh\:mm"))</td>
+                                                <td data-toggle="modal" data-target="#modalEditActivity">@a.Distance</td>
+                                                <td data-toggle="modal" data-target="#modalEditActivity">@a.CalculatedCalories</td>
+                                                <td data-toggle="modal" data-target="#modalDeleteActivity" style="cursor:pointer;"><img style="height: 1em; filter: invert(.5);" src="~/img/icons/trash-solid.svg"></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <div>No recent activities found. Add a new one <a asp-controller="Account" asp-action="createActivity">here!</a></div>
+                            }
+                        </div>
+
+                        @foreach (var discipline in Model.Disciplines)
+                        {
+                            <div class="tab-pane fade" id="@(discipline.NameNormalized)Panel" role="tabpanel">
+                                @if (Model.CurrentUser.Activities.Where(a => a.ActivityType.DisciplineId == discipline.DisciplineId).ToList().Count > 0)
+                                {
+                                    <table class="table table-hover table-sm mb-0" id="table@(discipline.NameNormalized)">
+                                        <thead>
+                                            <tr>
+                                                <th style="cursor:pointer; user-select:none;" onclick="sortTable(0, 'table@(discipline.NameNormalized)')" scope="col">Activity Type</th>
+                                                <th style="cursor:pointer; user-select:none;" onclick="sortTable(1, 'table@(discipline.NameNormalized)')" scope="col">Date</th>
+                                                <th style="cursor:pointer; user-select:none;" onclick="sortTable(2, 'table@(discipline.NameNormalized)')" scope="col">Duration</th>
+                                                <th style="cursor:pointer; user-select:none;" onclick="sortTable(3, 'table@(discipline.NameNormalized)')" scope="col">Distance</th>
+                                                <th style="cursor:pointer; user-select:none;" onclick="sortTable(4, 'table@(discipline.NameNormalized)')" scope="col">Calories</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var a in Model.CurrentUser.Activities.Where(a => a.ActivityType.DisciplineId == discipline.DisciplineId).OrderByDescending(a => a.StartTime).ToList())
+                                            {
+                                                <tr style="cursor:pointer;" id="@a.ActivityId" onclick="setActivityId(@a.ActivityId, @a.ActivityTypeId, '@a.StartTime.ToString("yyyy-MM-ddTHH:mm")', '@a.EndTime.ToString("HH:mm")', '@a.Distance');">
+                                                    <td data-toggle="modal" data-target="#modalEditActivity" scope="row">@a.ActivityType.Name</td>
+                                                    <td data-toggle="modal" data-target="#modalEditActivity">@a.StartTime.ToString("dd/MM/yyyy - HH:mm")</td>
+                                                    <td data-toggle="modal" data-target="#modalEditActivity">@(a.Duration.ToString(@"hh\:mm"))</td>
+                                                    <td data-toggle="modal" data-target="#modalEditActivity">@a.Distance</td>
+                                                    <td data-toggle="modal" data-target="#modalEditActivity">@a.CalculatedCalories</td>
+                                                    <td data-toggle="modal" data-target="#modalDeleteActivity" style="cursor:pointer;"><img style="height: 1em; filter: invert(.5);" src="~/img/icons/trash-solid.svg"></td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+                                else
+                                {
+                                    <div>No recent activities found. Add a new one <a asp-controller="Account" asp-action="createActivity">here!</a></div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade scrollbar" id="modalEditActivity" tabindex="-1" role="dialog" aria-labelledby="modalEditActivityLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post" asp-controller="Account" asp-action="EditActivity" asp-route-returnUrl="@returnUrl">
+                <input type="hidden" name="activityId" value="" id="edit_activityId">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditActivityLabel">Edit An Activity</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="editActivityBody">
+                    <div class="form-group">
+                        <label for="edit_activityTypeId">Activity Type</label>
+                        <select class="form-control" name="activityTypeId" id="edit_activityTypeId" required>
+                            @foreach (var item in Model.Disciplines)
+                            {
+                                <optgroup label="-- @(item.Name) --">
+                                    @foreach (var at in item.ActivityTypes)
+                                    {
+                                        <option id="edit_activityTypeId_@(at.ActivityTypeId)" value="@at.ActivityTypeId">@at.Name</option>
+                                    }
+                                </optgroup>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_startDate">Start Datetime</label>
+                        <input name="startDate" type="datetime-local" id="edit_startDate" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_endDate">End Time</label>
+                        <input name="endDate" type="time" id="edit_endDate" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_distance">Distance</label>
+                        <input name="distance" type="number" pattern="^\d*(\.\d{0,2})?$" step="0.01" id="edit_distance" class="form-control" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Edit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDeleteActivity" tabindex="-1" role="dialog" aria-labelledby="modalDeleteActivityLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post" asp-controller="Account" asp-action="DeleteActivity" asp-route-returnUrl="@returnUrl">
+                <input type="hidden" name="activityId" value="" id="del_activityId">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDeleteActivityLabel">Delete An Activity</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <h5 class="modal-title">Are you sure you want to delete this activity?</h5>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
