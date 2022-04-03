@@ -394,7 +394,5 @@ msbuild.wrn
 .TheGreatFinChallenge/.config/*
 .TheGreatFinChallenge/bin/
 .TheGreatFinChallenge/obj/
-*.csproj
-*.csproj.user
+.TheGreatFinChallenge/Properties/
 *.Development.json
-*.sln
