@@ -221,6 +221,86 @@ namespace TheGreatFinChallenge.Controllers
             return RedirectToActionPermanent(returnUrl.Split("_")[1], returnUrl.Split("_")[0]);
         }
 
+        public async Task<IActionResult> InitData(string returnUrl)
+        {
+            User u = Queries.GetUserByClaims(_context, User.Claims);
+            if (u.Admin)
+            {
+                var www = _environment.WebRootPath;
+
+                _context.Database.ExecuteSqlRaw($"" +
+                        $"INSERT INTO [Discipline]([Name], [NameNormalized], [Color], ImageData, IconData) " +
+                        $@"VALUES " +
+                        $@"('Cycling', 'cycling', '#800000', (SELECT * FROM OPENROWSET(BULK N'{www}\img\disciplines\cycling.png', SINGLE_BLOB) as img), (SELECT * FROM OPENROWSET(BULK N'{www}\img\icons\cycling-solid.svg', SINGLE_BLOB) as T1))," +
+                        $@"('Hiking', 'hiking', '#fabed4', (SELECT * FROM OPENROWSET(BULK N'{www}\img\disciplines\hiking.png', SINGLE_BLOB) as T1), (SELECT * FROM OPENROWSET(BULK N'{www}\img\icons\hiking-solid.svg', SINGLE_BLOB) as T1))," +
+                        $@"('Running', 'running', '#808000', (SELECT * FROM OPENROWSET(BULK N'{www}\img\disciplines\running.png', SINGLE_BLOB) as T1), (SELECT * FROM OPENROWSET(BULK N'{www}\img\icons\running-solid.svg', SINGLE_BLOB) as T1))," +
+                        $@"('Swimming', 'swimming', '#469990', (SELECT * FROM OPENROWSET(BULK N'{www}\img\disciplines\swimming.png', SINGLE_BLOB) as T1), (SELECT * FROM OPENROWSET(BULK N'{www}\img\icons\swimming-solid.svg', SINGLE_BLOB) as T1))," +
+                        $@"('Ball Sports', 'ballSports', '#000075', (SELECT * FROM OPENROWSET(BULK N'{www}\img\disciplines\ball.png', SINGLE_BLOB) as T1), (SELECT * FROM OPENROWSET(BULK N'{www}\img\icons\ball-solid.svg', SINGLE_BLOB) as T1))," +
+                        $@"('Racket Sports', 'racketSports', '#e6194B', (SELECT * FROM OPENROWSET(BULK N'{www}\img\disciplines\racket.png', SINGLE_BLOB) as T1), (SELECT * FROM OPENROWSET(BULK N'{www}\img\icons\racket-solid.svg', SINGLE_BLOB) as T1))," +
+                        $@"('Martial Arts', 'martialArts', '#ffe119', (SELECT * FROM OPENROWSET(BULK N'{www}\img\disciplines\combat.png', SINGLE_BLOB) as T1), (SELECT * FROM OPENROWSET(BULK N'{www}\img\icons\combat-solid.svg', SINGLE_BLOB) as T1))," +
+                        $@"('Fitness', 'fitness', '#bfef45', (SELECT * FROM OPENROWSET(BULK N'{www}\img\disciplines\fitness.png', SINGLE_BLOB) as T1), (SELECT * FROM OPENROWSET(BULK N'{www}\img\icons\fitness-solid.svg', SINGLE_BLOB) as T1))," +
+                        $@"('Winter Sports', 'winterSports', '#42d4f4', (SELECT * FROM OPENROWSET(BULK N'{www}\img\disciplines\winter.png', SINGLE_BLOB) as T1), (SELECT * FROM OPENROWSET(BULK N'{www}\img\icons\winter-solid.svg', SINGLE_BLOB) as T1))," +
+                        $@"('Summer Sports', 'summerSports', '#911eb4', (SELECT * FROM OPENROWSET(BULK N'{www}\img\disciplines\summer.png', SINGLE_BLOB) as T1), (SELECT * FROM OPENROWSET(BULK N'{www}\img\icons\summer-solid.svg', SINGLE_BLOB) as T1))," +
+                        $@"('Horse Riding', 'horseRiding', '#f032e6', (SELECT * FROM OPENROWSET(BULK N'{www}\img\disciplines\horse.png', SINGLE_BLOB) as T1), (SELECT * FROM OPENROWSET(BULK N'{www}\img\icons\horse-solid.svg', SINGLE_BLOB) as T1));");
+
+                _context.Database.ExecuteSqlRaw($"" +
+                        $@"INSERT INTO [ActivityType]([DisciplineId], [Name], MET, ImageData) " +
+                        $@"VALUES " +
+                        $@"(1, 'Analogue bike - 16 to 19 km/h', 7, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\bike.png', SINGLE_BLOB) as img))," +
+                        $@"(1, 'Analogue bike - 19 to 22 km/h', 8, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\bike.png', SINGLE_BLOB) as img))," +
+                        $@"(1, 'Analogue bike - 22 to 25 km/h', 10, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\bike.png', SINGLE_BLOB) as img))," +
+                        $@"(1, 'Analogue bike - 25 to 30 km/h', 12, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\bike.png', SINGLE_BLOB) as img))," +
+                        $@"(1, 'Analogue bike - 30+ km/h', 16, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\bike.png', SINGLE_BLOB) as img))," +
+                        $@"(1, 'E-bike - 16 to 19 km/h', 3.5, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\ebike.png', SINGLE_BLOB) as img))," +
+                        $@"(1, 'E-bike - 19 to 22 km/h', 4, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\ebike.png', SINGLE_BLOB) as img))," +
+                        $@"(1, 'E-bike - 22 to 25 km/h', 5, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\ebike.png', SINGLE_BLOB) as img))," +
+                        $@"(1, 'E-Bike - 25 to 30 km/h', 6, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\ebike.png', SINGLE_BLOB) as img))," +
+                        $@"(1, 'E-Bike - 30+ km/h', 8, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\ebike.png', SINGLE_BLOB) as img))," +
+                        $@"(1, 'Mountainbike - Offroad', 9, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\mbike.png', SINGLE_BLOB) as img))," +
+                        $@"(2, 'Hiking', 4.3, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\hiking.png', SINGLE_BLOB) as img))," +
+                        $@"(3, '0 to 6 km/h', 6, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\running.png', SINGLE_BLOB) as img))," +
+                        $@"(3, '6 to 8 km/h', 8.3, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\running.png', SINGLE_BLOB) as img))," +
+                        $@"(3, '8 to 10 km/h', 9.8, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\running.png', SINGLE_BLOB) as img))," +
+                        $@"(3, '10 to 11 km/h', 11, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\running.png', SINGLE_BLOB) as img))," +
+                        $@"(3, '11 to 13 km/h', 11.8, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\running.png', SINGLE_BLOB) as img))," +
+                        $@"(3, '13 to 14 km/h', 12.8, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\running.png', SINGLE_BLOB) as img))," +
+                        $@"(3, '14 to 17 km/h', 14.5, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\running.png', SINGLE_BLOB) as img))," +
+                        $@"(3, '17 to 19 km/h', 16, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\running.png', SINGLE_BLOB) as img))," +
+                        $@"(3, '19+ km/h', 19, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\running.png', SINGLE_BLOB) as img))," +
+                        $@"(4, 'Swimming', 6.8, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\swimming.png', SINGLE_BLOB) as img))," +
+                        $@"(5, 'Basketball', 6.5, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\basketball.png', SINGLE_BLOB) as img))," +
+                        $@"(5, 'Golf', 4.8, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\golf.png', SINGLE_BLOB) as img))," +
+                        $@"(5, 'Handball', 8, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\handball.png', SINGLE_BLOB) as img))," +
+                        $@"(5, 'Field Hockey', 7.8, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\hockey.png', SINGLE_BLOB) as img))," +
+                        $@"(5, 'Football', 6.3, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\football.png', SINGLE_BLOB) as img))," +
+                        $@"(5, 'Soccer', 7, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\soccer.png', SINGLE_BLOB) as img))," +
+                        $@"(5, 'Volley-ball', 4, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\volley-ball.png', SINGLE_BLOB) as img))," +
+                        $@"(6, 'Badminton', 5.5, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\badminton.png', SINGLE_BLOB) as img))," +
+                        $@"(6, 'Padel', 5.3, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\padel.png', SINGLE_BLOB) as img))," +
+                        $@"(6, 'Squash', 7.3, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\squash.png', SINGLE_BLOB) as img))," +
+                        $@"(6, 'Table Tennis', 4, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\ttennis.png', SINGLE_BLOB) as img))," +
+                        $@"(6, 'Tennis', 7.3, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\tennis.png', SINGLE_BLOB) as img))," +
+                        $@"(7, 'Martial Arts', 5.3, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\martialarts.png', SINGLE_BLOB) as img))," +
+                        $@"(8, 'Cardio - Strength training', 7.8, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\cardio.png', SINGLE_BLOB) as img))," +
+                        $@"(8, 'Dancing - Aerobics', 7.3, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\aerobics.png', SINGLE_BLOB) as img))," +
+                        $@"(8, 'Workout (General)', 6, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\workout.png', SINGLE_BLOB) as img))," +
+                        $@"(9, 'Skiing - Snowboarding', 7, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\skiing.png', SINGLE_BLOB) as img))," +
+                        $@"(9, 'Ice skating', 5.5, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\iceskating.png', SINGLE_BLOB) as img))," +
+                        $@"(10, 'Roller skating', 7, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\rskating.png', SINGLE_BLOB) as img))," +
+                        $@"(10, 'Inline skating', 9.8, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\iskating.png', SINGLE_BLOB) as img))," +
+                        $@"(10, 'surfing - Sailing', 3.3, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\surfing.png', SINGLE_BLOB) as img))," +
+                        $@"(11, 'Horse riding', 5.5, (SELECT * FROM OPENROWSET(BULK N'{www}\img\activityTypes\horse.png', SINGLE_BLOB) as img));");
+
+
+
+
+                TempData["Succes"] = "The data is succesfully initialized.";
+                return RedirectToActionPermanent(returnUrl.Split("_")[1], returnUrl.Split("_")[0]);
+            }
+            TempData["Error"] = "Invalid rights. Please contact an administrator.";
+            return RedirectToActionPermanent(returnUrl.Split("_")[1], returnUrl.Split("_")[0]);
+        }
+
         //    // POST: /Backup
         //    [HttpPost("Backup")]
         //    public async Task<ActionResult> GetBackupFile()

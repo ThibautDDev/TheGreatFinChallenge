@@ -20,7 +20,13 @@ namespace TheGreatFinChallenge.Models
         public int DirectorateId { get; set; }
         public Directorate Directorate { get; set; }
 
-        public int AmountOfEmployees { get; set; }
+        [NotMapped]
+        public int AmountOfEmployees {
+            get
+            {
+                return Users.Count;
+            }
+        }
 
         public List<User> Users { get; set; }
 

@@ -174,8 +174,14 @@
                         <button type="submit" class="btn btn-outline-danger">Reset password</button>
                     </form>
                 </div>
-                //TODO: Disciplines met mogelijkheid tot toevoegen ervan
-                //TODO: ActivityTypes met mogelijkheid tot toevoegen ervan
+                <div class="my-4">
+                    <form asp-controller="Account" asp-action="InitData" asp-route-returnUrl="@System.Net.WebUtility.UrlEncode(returnUrl)" method="post">
+                        <div class="form-row">
+                            <label for="firstName">Initialization of Disciplines & ActivityTypes</label>
+                        </div>
+                        <button type="submit" class="btn btn-outline-danger">Init Data</button>
+                    </form>
+                </div>
             }
         </div>
     </div>
