@@ -14,6 +14,7 @@ namespace TheGreatFinChallenge.Models
         public int DirectorateId { get; set; }
 
         public string Name { get; set; }
+
         public DateTime? ChallengeStartDate { get; set; }
         public DateTime? ChallengeEndDate { get; set; }
 

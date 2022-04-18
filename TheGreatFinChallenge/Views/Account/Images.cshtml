@@ -57,14 +57,14 @@
                                     if (image.User == Model.CurrentUser)
                                     {
                                         <a class="grouped_elements" onclick="document.getElementById('del_imageId').value = @image.ImageId;" data-toggle="modal" data-target="#modalDeleteImage" style="cursor: pointer;">
-                                            <img src="data:image;base64,@System.Convert.ToBase64String(image.ImageData)" />
+                                            <img src="~/img/uploads/@(image.ImageData)" />
                                             <div class="bg-dark text-decoration-none text-white px-2">@image.User.FirstName @(image.User.LastName[0]).</div>
                                         </a>
                                     }
                                     else
                                     {
                                         <a class="grouped_elements">
-                                            <img src="data:image;base64,@System.Convert.ToBase64String(image.ImageData)" />
+                                            <img src="~/img/uploads/@(image.ImageData)" />
                                             <div class="bg-dark text-decoration-none text-white px-2">@image.User.FirstName @(image.User.LastName[0]).</div>
                                         </a>
                                     }
@@ -80,14 +80,14 @@
                                         if (image.User == Model.CurrentUser)
                                         {
                                             <a class="grouped_elements" onclick="document.getElementById('del_imageId').value = @image.ImageId;" data-toggle="modal" data-target="#modalDeleteImage" style="cursor: pointer;">
-                                                <img src="data:image;base64,@System.Convert.ToBase64String(image.ImageData)" />
+                                            <img src="~/img/uploads/@(image.ImageData)" />
                                                 <div class="bg-dark text-decoration-none text-white px-2">@image.User.FirstName @(image.User.LastName[0]).</div>
                                             </a>
                                         }
                                         else
                                         {
                                             <a class="grouped_elements">
-                                                <img src="data:image;base64,@System.Convert.ToBase64String(image.ImageData)" />
+                                                <img src="~/img/uploads/@(image.ImageData)" />
                                                 <div class="bg-dark text-decoration-none text-white px-2">@image.User.FirstName @(image.User.LastName[0]).</div>
                                             </a>
                                         }

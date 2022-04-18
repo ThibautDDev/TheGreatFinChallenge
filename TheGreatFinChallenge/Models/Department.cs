@@ -20,7 +20,6 @@ namespace TheGreatFinChallenge.Models
         public int DirectorateId { get; set; }
         public Directorate Directorate { get; set; }
 
-        public int AmountOfEmployees { get; set; }
 
         public List<User> Users { get; set; }
 

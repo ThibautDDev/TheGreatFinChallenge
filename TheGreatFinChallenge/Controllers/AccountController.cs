@@ -184,14 +184,15 @@ namespace TheGreatFinChallenge.Controllers
         {
             if (file != null && file.Length > 0)
             {
-                Byte[] fileBytes;
-                using (var ms = new MemoryStream())
+                string folder = Path.Combine(_environment.WebRootPath, "img\\uploads");
+                string name = $"{Guid.NewGuid().ToString()}.png";
+                string filePath = Path.Combine(folder, name);
+                using (Stream fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    file.CopyTo(ms);
-                    fileBytes = ms.ToArray();
+                    await file.CopyToAsync(fileStream);
                 }
 
-                Image i = new Image(userId, fileBytes);
+                Image i = new Image(userId, name);
                 _context.Image.Add(i);
                 await _context.SaveChangesAsync();
 

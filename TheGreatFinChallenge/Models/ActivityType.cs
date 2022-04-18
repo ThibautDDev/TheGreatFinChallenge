@@ -15,7 +15,7 @@ namespace TheGreatFinChallenge.Models
 
         public string Name { get; set; }
         public double MET { get; set; }
-        public Byte[] ImageData { get; set; }
+        public string ImageData { get; set; }
 
         public int DisciplineId { get; set; }
         public Discipline Discipline { get; set; }

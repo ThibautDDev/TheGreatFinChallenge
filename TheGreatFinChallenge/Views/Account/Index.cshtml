@@ -80,7 +80,7 @@
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.CurrentUser.Activities.Where(a => a.ActivityType.Discipline == dpln).ToList().Count</div>
                             </div>
                             <div class="col-auto">
-                                <img style="height: 2.3em; filter: invert(.5);" src="data:image/svg+xml;base64,@System.Convert.ToBase64String(dpln.IconData)">
+                                <img style="height: 2.3em; filter: invert(.5);" src="~/img/icons/@(dpln.IconData)">
                             </div>
                         </div>
                     </div>

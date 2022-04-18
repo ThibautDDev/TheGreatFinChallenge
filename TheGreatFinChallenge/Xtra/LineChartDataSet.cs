@@ -130,7 +130,7 @@ namespace TheGreatFinChallenge.Xtra
             foreach (var activity in _dep.Activities.Where(a => a.StartTime >= _start && a.EndTime <= _end))
             {
                 var day = (activity.StartTime.Day - _start.Day);
-                res[day] = res[day] + (1 / _dep.AmountOfEmployees);
+                res[day] = res[day] + (1 / _dep.Users.Count);
             }
 
             for (int i = 1; i < res.Count; i++)
@@ -196,7 +196,7 @@ namespace TheGreatFinChallenge.Xtra
             foreach (var activity in _dep.Activities.Where(a => a.StartTime >= _start && a.EndTime <= _end))
             {
                 var day = (activity.StartTime.Day - _start.Day);
-                res[day] = res[day] + (activity.CalculatedCalories / _dep.AmountOfEmployees);
+                res[day] = res[day] + (activity.CalculatedCalories / _dep.Users.Count);
             }
 
             for (int i = 1; i < res.Count; i++)
@@ -262,7 +262,7 @@ namespace TheGreatFinChallenge.Xtra
             foreach (var activity in _dep.Activities.Where(a => a.StartTime >= _start && a.EndTime <= _end))
             {
                 var day = (activity.StartTime.Day - _start.Day);
-                res[day] = res[day] + (activity.Distance / _dep.AmountOfEmployees);
+                res[day] = res[day] + (activity.Distance / _dep.Users.Count);
             }
 
             for (int i = 1; i < res.Count; i++)
@@ -328,7 +328,7 @@ namespace TheGreatFinChallenge.Xtra
             foreach (var activity in _dep.Activities.Where(a => a.StartTime >= _start && a.EndTime <= _end))
             {
                 var day = (activity.StartTime.Day - _start.Day);
-                res[day] = res[day] + (activity.Duration.TotalMinutes / _dep.AmountOfEmployees);
+                res[day] = res[day] + (activity.Duration.TotalMinutes / _dep.Users.Count);
             }
 
             for (int i = 1; i < res.Count; i++)

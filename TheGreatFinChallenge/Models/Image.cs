@@ -14,9 +14,9 @@ namespace TheGreatFinChallenge.Models
         public int UserId { get; set; }
         public User User { get; set; }
 
-        public Byte[] ImageData { get; set; }
+        public string ImageData { get; set; }
 
-        public Image(int userId, Byte[] imageData)
+        public Image(int userId, string imageData)
         {
             UserId = userId;
             ImageData = imageData;

@@ -16,8 +16,8 @@ namespace TheGreatFinChallenge.Models
         public string Name { get; set; }
         public string NameNormalized { get; set; }
         public string Color { get; set; }
-        public Byte[] ImageData { get; set; }
-        public Byte[] IconData { get; set; }
+        public string ImageData { get; set; }
+        public string IconData { get; set; }
 
         public List<ActivityType> ActivityTypes { get; set; }
     }

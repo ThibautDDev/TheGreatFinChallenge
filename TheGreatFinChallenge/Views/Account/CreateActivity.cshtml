@@ -65,7 +65,7 @@
                                 <div class="flex-grow-1 d-flex justify-content-center flex-column mb-3">
                                     <label class="d-flex justify-content-center">
                                         <input type="radio" name="disciplineId" value="@dscpln.DisciplineId" onclick="changeActivityTypes(@dscpln.DisciplineId, 0)" />
-                                        <img style="height: 12em; width:auto;" src="data:image;base64,@System.Convert.ToBase64String(dscpln.ImageData)">
+                                        <img style="height: 12em; width:auto;" src="~/img/disciplines/@(dscpln.ImageData)">
                                     </label>
                                     <h5 style="color: #2C3E50;" class="text-center">@dscpln.Name</h5>
                                 </div>
@@ -85,7 +85,7 @@
                                         <div class="flex-grow-1 d-flex justify-content-center flex-column mb-3">
                                             <label class="d-flex justify-content-center">
                                                 <input type="radio" name="activityTypeId" value="@act.ActivityTypeId" onclick="nxtButton(1)" />
-                                                <img style="height: 12em; width:auto;" src="data:image;base64,@System.Convert.ToBase64String(act.ImageData)">
+                                                <img style="height: 12em; width:auto;" src="~/img/activityTypes/@(act.ImageData)">
                                             </label>
                                             <h6 style="color: #2C3E50;" class="text-center">@act.Name</h6>
                                         </div>
