@@ -139,21 +139,21 @@ namespace TheGreatFinChallenge.Controllers
             }
         }
 
-        public async Task<IActionResult> CreateAndValidateActivity(string returnUrl, int disciplineId, int activityTypeId, string distance, DateTime startDate, DateTime endDate)
+        public async Task<IActionResult> CreateAndValidateActivity(string returnUrl, int disciplineId, int activityTypeId, string distance, DateTime date, TimeSpan duration)
         {
             string distanceNormalized = distance.Replace(',', '.');
             double dDistance;
             double.TryParse(distanceNormalized, NumberStyles.Any, CultureInfo.InvariantCulture, out dDistance);
 
             User currentUser = Queries.GetUserByClaims(_context, User.Claims);
-            Activity a = new Activity(currentUser.UserId, activityTypeId, dDistance, startDate, endDate);
+            Activity a = new Activity(currentUser.UserId, activityTypeId, dDistance, date, duration);
             await _context.Activity.AddAsync(a);
             await _context.SaveChangesAsync();
 
             return RedirectToActionPermanent(returnUrl.Split("_")[1], returnUrl.Split("_")[0]);
         }
 
-        public async Task<IActionResult> EditActivity(string returnUrl, int activityId, int activityTypeId, string distance, DateTime startDate, DateTime endDate)
+        public async Task<IActionResult> EditActivity(string returnUrl, int activityId, int activityTypeId, string distance, DateTime date, TimeSpan duration)
         {
             string distanceNormalized = distance.Replace(',', '.');
             double dDistance;
@@ -162,8 +162,8 @@ namespace TheGreatFinChallenge.Controllers
             Activity a = Queries.GetActivityById(_context, activityId);
             a.ActivityTypeId = activityTypeId;
             a.Distance = dDistance;
-            a.StartTime = startDate;
-            a.EndTime = Activity.WithDate(endDate, startDate);
+            a.Date = date;
+            a.Duration = duration;
 
             _context.Activity.Update(a);
             await _context.SaveChangesAsync();

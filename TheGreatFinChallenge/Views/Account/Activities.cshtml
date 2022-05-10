@@ -35,13 +35,14 @@
             }
         }
 
-        function setActivityId(aId, atId, strtDate, endDate, dstnc) {
+        function setActivityId(aId, atId, date, limitDate, duration, dstnc) {
             //console.log(aId, strtDate, endDate, dstnc)
             document.getElementById("edit_activityId").value = aId;
             document.getElementById("edit_activityTypeId").value = "";
             document.getElementById(`edit_activityTypeId_${atId}`).selected = true;
-            document.getElementById("edit_startDate").value = strtDate;
-            document.getElementById("edit_endDate").value = endDate;
+            document.getElementById("edit_date").value = date;
+            document.getElementById("edit_date").min = limitDate;
+            document.getElementById("edit_duration").value = duration;
             document.getElementById("edit_distance").value = dstnc.replace(",", ".");
 
             document.getElementById("del_activityId").value = aId;
@@ -95,12 +96,12 @@
 
                                     </thead>
                                     <tbody>
-                                        @foreach (var a in Model.CurrentUser.Activities.OrderByDescending(a => a.StartTime))
+                                        @foreach (var a in Model.CurrentUser.Activities.OrderByDescending(a => a.Date).ThenByDescending(a => a.ActivityId))
                                         {
-                                            <tr style="cursor:pointer;" id="@a.ActivityId" onclick="setActivityId(@a.ActivityId, @a.ActivityTypeId, '@a.StartTime.ToString("yyyy-MM-ddTHH:mm")', '@a.EndTime.ToString("HH:mm")', '@a.Distance');">
+                                            <tr style="cursor:pointer;" id="@a.ActivityId" onclick="setActivityId(@a.ActivityId, @a.ActivityTypeId, '@a.Date.ToString("yyyy-MM-dd")', '@a.Date.AddDays(-3).ToString("yyyy-MM-dd")', '@a.Duration.ToString(@"hh\:mm")', '@a.Distance');">
                                                 <td data-toggle="modal" data-target="#modalEditActivity" scope="row">@a.ActivityType.Discipline.Name</td>
                                                 <td data-toggle="modal" data-target="#modalEditActivity">@a.ActivityType.Name</td>
-                                                <td data-toggle="modal" data-target="#modalEditActivity">@a.StartTime.ToString("dd/MM/yyyy - HH:mm")</td>
+                                                <td data-toggle="modal" data-target="#modalEditActivity">@a.Date.ToString("dd/MM/yyyy")</td>
                                                 <td data-toggle="modal" data-target="#modalEditActivity">@(a.Duration.ToString(@"hh\:mm"))</td>
                                                 <td data-toggle="modal" data-target="#modalEditActivity">@a.Distance</td>
                                                 <td data-toggle="modal" data-target="#modalEditActivity">@a.CalculatedCalories</td>
@@ -133,11 +134,11 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach (var a in Model.CurrentUser.Activities.Where(a => a.ActivityType.DisciplineId == discipline.DisciplineId).OrderByDescending(a => a.StartTime).ToList())
+                                            @foreach (var a in Model.CurrentUser.Activities.Where(a => a.ActivityType.DisciplineId == discipline.DisciplineId).OrderByDescending(a => a.Date).ThenByDescending(a => a.ActivityId).ToList())
                                             {
-                                                <tr style="cursor:pointer;" id="@a.ActivityId" onclick="setActivityId(@a.ActivityId, @a.ActivityTypeId, '@a.StartTime.ToString("yyyy-MM-ddTHH:mm")', '@a.EndTime.ToString("HH:mm")', '@a.Distance');">
+                                                <tr style="cursor:pointer;" id="@a.ActivityId" onclick="setActivityId(@a.ActivityId, @a.ActivityTypeId, '@a.Date.ToString("yyyy-MM-dd")', '@a.Date.AddDays(-3).ToString("yyyy-MM-dd")', '@a.Duration.ToString(@"hh\:mm")', '@a.Distance');">
                                                     <td data-toggle="modal" data-target="#modalEditActivity" scope="row">@a.ActivityType.Name</td>
-                                                    <td data-toggle="modal" data-target="#modalEditActivity">@a.StartTime.ToString("dd/MM/yyyy - HH:mm")</td>
+                                                    <td data-toggle="modal" data-target="#modalEditActivity">@a.Date.ToString("dd/MM/yyyy")</td>
                                                     <td data-toggle="modal" data-target="#modalEditActivity">@(a.Duration.ToString(@"hh\:mm"))</td>
                                                     <td data-toggle="modal" data-target="#modalEditActivity">@a.Distance</td>
                                                     <td data-toggle="modal" data-target="#modalEditActivity">@a.CalculatedCalories</td>
@@ -187,12 +188,12 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="edit_startDate">Start Datetime</label>
-                        <input name="startDate" type="datetime-local" id="edit_startDate" class="form-control" required />
+                        <label for="edit_date">Date</label>
+                        <input name="date" type="date" id="edit_date" class="form-control" required max='@DateTime.Now.ToString("yyyy-MM-dd")' />
                     </div>
                     <div class="form-group">
-                        <label for="edit_endDate">End Time</label>
-                        <input name="endDate" type="time" id="edit_endDate" class="form-control" required />
+                        <label for="edit_duration">Duration</label>
+                        <input name="duration" type="time" id="edit_duration" class="form-control" required />
                     </div>
                     <div class="form-group">
                         <label for="edit_distance">Distance</label>

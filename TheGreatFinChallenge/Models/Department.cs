@@ -43,9 +43,9 @@ namespace TheGreatFinChallenge.Models
                 {
                     var _start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                     var _end = _start.AddMonths(1).AddMinutes(-1);
-                    return Activities.Where(a => a.StartTime >= _start && a.EndTime <= _end).ToList().Count;
+                    return Activities.Where(a => a.Date >= _start && a.Date <= _end).ToList().Count;
                 }
-                return Activities.Where(a => a.StartTime >= Directorate.ChallengeStartDate && a.EndTime <= Directorate.ChallengeEndDate).ToList().Count;
+                return Activities.Where(a => a.Date >= Directorate.ChallengeStartDate && a.Date <= Directorate.ChallengeEndDate).ToList().Count;
             }
         }
 
@@ -58,9 +58,9 @@ namespace TheGreatFinChallenge.Models
                 {
                     var _start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                     var _end = _start.AddMonths(1).AddMinutes(-1);
-                    return Activities.Where(a => a.StartTime >= _start && a.EndTime <= _end).Sum(a => a.CalculatedCalories);
+                    return Activities.Where(a => a.Date >= _start && a.Date <= _end).Sum(a => a.CalculatedCalories);
                 }
-                return Activities.Where(a => a.StartTime >= Directorate.ChallengeStartDate && a.EndTime <= Directorate.ChallengeEndDate).Sum(a => a.CalculatedCalories);
+                return Activities.Where(a => a.Date >= Directorate.ChallengeStartDate && a.Date <= Directorate.ChallengeEndDate).Sum(a => a.CalculatedCalories);
             }
         }
 
@@ -73,9 +73,9 @@ namespace TheGreatFinChallenge.Models
                 {
                     var _start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                     var _end = _start.AddMonths(1).AddMinutes(-1);
-                    return Math.Round(Activities.Where(a => a.StartTime >= _start && a.EndTime <= _end).Sum(a => a.Distance), 2);
+                    return Math.Round(Activities.Where(a => a.Date >= _start && a.Date <= _end).Sum(a => a.Distance), 2);
                 }
-                return Math.Round(Activities.Where(a => a.StartTime >= Directorate.ChallengeStartDate && a.EndTime <= Directorate.ChallengeEndDate).Sum(a => a.Distance), 2);
+                return Math.Round(Activities.Where(a => a.Date >= Directorate.ChallengeStartDate && a.Date <= Directorate.ChallengeEndDate).Sum(a => a.Distance), 2);
             }
         }
 
@@ -88,9 +88,9 @@ namespace TheGreatFinChallenge.Models
                 {
                     var _start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                     var _end = _start.AddMonths(1).AddMinutes(-1);
-                    return new TimeSpan(Activities.Where(a => a.StartTime >= _start && a.EndTime <= _end).Sum(a => a.Duration.Ticks));
+                    return new TimeSpan(Activities.Where(a => a.Date >= _start && a.Date <= _end).Sum(a => a.Duration.Ticks));
                 }
-                return new TimeSpan(Activities.Where(a => a.StartTime >= Directorate.ChallengeStartDate && a.EndTime <= Directorate.ChallengeEndDate).Sum(a => a.Duration.Ticks));
+                return new TimeSpan(Activities.Where(a => a.Date >= Directorate.ChallengeStartDate && a.Date <= Directorate.ChallengeEndDate).Sum(a => a.Duration.Ticks));
             }
         }
     }

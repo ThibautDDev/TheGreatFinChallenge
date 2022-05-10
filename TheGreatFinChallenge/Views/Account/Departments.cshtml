@@ -37,7 +37,7 @@
     </script>
     <script src="~/lib/chart.js/chart.js"></script>
     <script src="~/js/charts/chart-area-departments.js"></script>
-}
+}   
 
 <div class="container-fluid">
 
@@ -50,7 +50,7 @@
                 @{ int i = 0; }
                 @foreach (var header in Model.RankingChartHeaders)
                 {
-                    <div onclick="changeDataOfUserRanking(@i, @(header == Model.RankingChartHeaders.Last() ? 0 : i + 1))" style="cursor:pointer; user-select:none;" class="UserRankingChartHeaders card-header py-3 flex-row align-items-center justify-content-between hoverHeader @(++i == 1 ? "d-flex" : "d-none")">
+                    <div id="ur_@i" onclick="changeDataOfUserRanking(@i, @(header == Model.RankingChartHeaders.Last() ? 0 : i + 1))" style="cursor:pointer; user-select:none;" class="UserRankingChartHeaders card-header py-3 flex-row align-items-center justify-content-between hoverHeader @(++i == 2 ? "d-flex" : "d-none")">
                         <h6 class="m-0 font-weight-bold text-primary">@header</h6>
                     </div>
                 }
@@ -62,7 +62,7 @@
                     <div class="chart-area col-xl-3">
                         <div class="userRankingTables">
                             @{ i = 0;}
-                            <table class="table table-hover table-sm mb-0" id="userRankingTables_@(i)">
+                            <table class="table table-hover table-sm mb-0 d-none" id="userRankingTables_@(i)">
                                 <thead>
                                     <tr>
                                         <th style="user-select:none;" scope="col">User</th>
@@ -80,7 +80,7 @@
                                 </tbody>
                             </table>
 
-                            <table class="table table-hover table-sm mb-0 d-none" id="userRankingTables_@(++i)">
+                            <table class="table table-hover table-sm mb-0" id="userRankingTables_@(++i)">
                                 <thead>
                                     <tr>
                                         <th style="user-select:none;" scope="col">User</th>
@@ -151,7 +151,7 @@
                 @{ i = 0; }
                 @foreach (var header in Model.RankingChartHeaders)
                 {
-                    <div onclick="changeDataOfGroupRanking(@i, @(header == Model.RankingChartHeaders.Last() ? 0 : i + 1))" style="cursor:pointer; user-select:none;" class="GroupRankingChartHeaders card-header py-3 flex-row align-items-center justify-content-between hoverHeader @(++i == 1 ? "d-flex" : "d-none")">
+                    <div onclick="changeDataOfGroupRanking(@i, @(header == Model.RankingChartHeaders.Last() ? 0 : i + 1))" style="cursor:pointer; user-select:none;" class="GroupRankingChartHeaders card-header py-3 flex-row align-items-center justify-content-between hoverHeader @(++i == 2 ? "d-flex" : "d-none")">
                         <h6 class="m-0 font-weight-bold text-primary">@header</h6>
                     </div>
                 }
@@ -162,7 +162,7 @@
                     <div class="chart-area col-xl-3">
                         <div class="groupRankingTables">
                             @{ i = 0;}
-                            <table class="table table-hover table-sm mb-0" id="groupRankingTables_@(i)">
+                            <table class="table table-hover table-sm mb-0 d-none" id="groupRankingTables_@(i)">
                                 <thead>
                                     <tr>
                                         <th style="user-select:none;" scope="col">Group</th>
@@ -180,7 +180,7 @@
                                 </tbody>
                             </table>
 
-                            <table class="table table-hover table-sm mb-0 d-none" id="groupRankingTables_@(++i)">
+                            <table class="table table-hover table-sm mb-0" id="groupRankingTables_@(++i)">
                                 <thead>
                                     <tr>
                                         <th style="user-select:none;" scope="col">User</th>
@@ -316,12 +316,12 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @foreach (var a in Model.ActivitiesByDepartments[group].OrderByDescending(a => a.StartTime))
+                                                            @foreach (var a in Model.ActivitiesByDepartments[group].OrderByDescending(a => a.Date).ThenByDescending(a => a.ActivityId))
                                                             {
                                                                 <tr style="cursor:pointer;" id="@a.ActivityId">
                                                                     <td scope="row">@(a.User.FirstName) @(a.User.LastName[0]).</td>
                                                                     <td>@a.ActivityType.Name</td>
-                                                                    <td>@(a.User.Gdpr ? a.StartTime.ToString("dd/MM/yyyy - HH:mm") : "NaN")</td>
+                                                                    <td>@(a.User.Gdpr ? a.Date.ToString("dd/MM/yyyy") : "NaN")</td>
                                                                     <td>@(a.Duration.ToString(@"hh\:mm"))</td>
                                                                     <td>@a.Distance</td>
                                                                     <td>@a.CalculatedCalories</td>
@@ -354,12 +354,12 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                @foreach (var a in Model.ActivitiesByDepartments[group].Where(a => a.ActivityType.Discipline == discipline).OrderByDescending(a => a.StartTime))
+                                                                @foreach (var a in Model.ActivitiesByDepartments[group].Where(a => a.ActivityType.Discipline == discipline).OrderByDescending(a => a.Date).ThenByDescending(a => a.ActivityId))
                                                                 {
                                                                     <tr style="cursor:pointer;" id="@a.ActivityId">
                                                                         <td scope="row">@(a.User.FirstName) @(a.User.LastName[0]).</td>
                                                                         <td>@a.ActivityType.Name</td>
-                                                                        <td>@(a.User.Gdpr ? a.StartTime.ToString("dd/MM/yyyy - HH:mm") : "NaN")</td>
+                                                                        <td>@(a.User.Gdpr ? a.Date.ToString("dd/MM/yyyy") : " ")</td>
                                                                         <td>@(a.Duration.ToString(@"hh\:mm"))</td>
                                                                         <td>@a.Distance</td>
                                                                         <td>@a.CalculatedCalories</td>

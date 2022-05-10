@@ -22,26 +22,23 @@ namespace TheGreatFinChallenge.Models
         public ActivityType ActivityType { get; set; }
 
         public double Distance { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public DateTime Date { get; set; }
+        public TimeSpan Duration { get; set; }
 
         [NotMapped]
         public int CalculatedCalories { get { return Calories.CalculateCalories(this); } }
-
-        [NotMapped]
-        public TimeSpan Duration { get { return (EndTime - StartTime); } }
 
 
 
         public static DateTime WithDate(DateTime datetime, DateTime newDate) => newDate.Date + datetime.TimeOfDay;
 
-        public Activity(int userId, int activityTypeId, double distance, DateTime startTime, DateTime endTime)
+        public Activity(int userId, int activityTypeId, double distance, DateTime date, TimeSpan duration)
         {
             UserId = userId;
             ActivityTypeId = activityTypeId;
             Distance = distance;
-            StartTime = startTime;
-            EndTime = WithDate(endTime, startTime);
+            Date = date;
+            Duration = duration;
         }
     }
 }

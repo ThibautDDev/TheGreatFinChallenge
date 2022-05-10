@@ -69,6 +69,7 @@ function initCharts() {
                 }],
             },
             options: {
+                animation: false,
                 maintainAspectRatio: false,
                 layout: {
                     padding: {
@@ -149,6 +150,7 @@ function initCharts() {
             datasets: userRankingChartData[0],
         },
         options: {
+            animation: false,
             maintainAspectRatio: false,
             layout: {
                 padding: {
@@ -228,6 +230,7 @@ function initCharts() {
             datasets: groupRankingChartData[0],
         },
         options: {
+            animation: false,
             maintainAspectRatio: false,
             layout: {
                 padding: {

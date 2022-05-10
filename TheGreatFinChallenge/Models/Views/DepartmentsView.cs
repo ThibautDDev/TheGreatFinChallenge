@@ -47,7 +47,7 @@ namespace TheGreatFinChallenge.Models.Views
                 ChallengeStartDate = (DateTime)CurrentUser.Department.Directorate.ChallengeStartDate;
                 ChallengeEndDate = (DateTime)CurrentUser.Department.Directorate.ChallengeEndDate;
             }
-            foreach (var dep in Departments) ActivitiesByDepartments[dep] = dep.Activities.Where(a => a.StartTime >= ChallengeStartDate && a.EndTime <= ChallengeEndDate).ToList();
+            foreach (var dep in Departments) ActivitiesByDepartments[dep] = dep.Activities.Where(a => a.Date >= ChallengeStartDate && a.Date <= ChallengeEndDate).ToList();
 
 
             List<DateTime> dates = GetDatesBetween(ChallengeStartDate, ChallengeEndDate);
@@ -109,8 +109,8 @@ namespace TheGreatFinChallenge.Models.Views
             foreach(var department in Departments)
             {
                 var values = LineChartData[department.DepartmentId][0];
-                foreach (var activity in department.Activities.Where(a => a.StartTime >= ChallengeStartDate && a.EndTime <= ChallengeEndDate)) {
-                    var day = (activity.StartTime.Day - ChallengeStartDate.Day);
+                foreach (var activity in department.Activities.Where(a => a.Date >= ChallengeStartDate && a.Date <= ChallengeEndDate)) {
+                    var day = (activity.Date.Day - ChallengeStartDate.Day);
                     values[day] = values[day] + 1;
                 }
                 LineChartData[department.DepartmentId][0] = values;
@@ -122,9 +122,9 @@ namespace TheGreatFinChallenge.Models.Views
             foreach (var department in Departments)
             {
                 var values = LineChartData[department.DepartmentId][1];
-                foreach (var activity in department.Activities.Where(a => a.StartTime >= ChallengeStartDate && a.EndTime <= ChallengeEndDate))
+                foreach (var activity in department.Activities.Where(a => a.Date >= ChallengeStartDate && a.Date <= ChallengeEndDate))
                 {
-                    var day = (activity.StartTime.Day - ChallengeStartDate.Day);
+                    var day = (activity.Date.Day - ChallengeStartDate.Day);
                     values[day] = values[day] + activity.CalculatedCalories;
                 }
                 LineChartData[department.DepartmentId][1] = values;
@@ -136,9 +136,9 @@ namespace TheGreatFinChallenge.Models.Views
             foreach (var department in Departments)
             {
                 var values = LineChartData[department.DepartmentId][2];
-                foreach (var activity in department.Activities.Where(a => a.StartTime >= ChallengeStartDate && a.EndTime <= ChallengeEndDate))
+                foreach (var activity in department.Activities.Where(a => a.Date >= ChallengeStartDate && a.Date <= ChallengeEndDate))
                 {
-                    var day = (activity.StartTime.Day - ChallengeStartDate.Day);
+                    var day = (activity.Date.Day - ChallengeStartDate.Day);
                     values[day] = Math.Round(values[day] + activity.Distance, 2);
                 }
                 LineChartData[department.DepartmentId][2] = values;
@@ -150,9 +150,9 @@ namespace TheGreatFinChallenge.Models.Views
             foreach (var department in Departments)
             {
                 var values = LineChartData[department.DepartmentId][3];
-                foreach (var activity in department.Activities.Where(a => a.StartTime >= ChallengeStartDate && a.EndTime <= ChallengeEndDate))
+                foreach (var activity in department.Activities.Where(a => a.Date >= ChallengeStartDate && a.Date <= ChallengeEndDate))
                 {
-                    var day = (activity.StartTime.Day - ChallengeStartDate.Day);
+                    var day = (activity.Date.Day - ChallengeStartDate.Day);
                     values[day] = values[day] + activity.Duration.TotalMinutes;
                 }
                 LineChartData[department.DepartmentId][3] = values;
@@ -163,12 +163,12 @@ namespace TheGreatFinChallenge.Models.Views
         {
             foreach (var department in Departments)
             {
-                foreach (var activity in department.Activities.Where(a => a.StartTime >= ChallengeStartDate && a.EndTime <= ChallengeEndDate))
+                foreach (var activity in department.Activities.Where(a => a.Date >= ChallengeStartDate && a.Date <= ChallengeEndDate))
                 {
                     var index = Disciplines.IndexOf(activity.ActivityType.Discipline);
                     var values = LineChartData[department.DepartmentId][4+index];
 
-                    var day = (activity.StartTime.Day - ChallengeStartDate.Day);
+                    var day = (activity.Date.Day - ChallengeStartDate.Day);
                     values[day] = values[day] + 1;
                     LineChartData[department.DepartmentId][4 + index] = values;
                 }

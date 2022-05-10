@@ -44,7 +44,7 @@ namespace TheGreatFinChallenge.Models.Views
             List<DateTime> dates = GetDatesBetween(ChallengeStartDate, ChallengeEndDate);
             foreach (var date in dates) LineChartLabels.Add($"{date.ToString("dd/MM/yy")}");
 
-            TotalCalories = Calories.CalculateTotalCalories(CurrentUser.Activities.Where(a => a.StartTime >= ChallengeStartDate && a.EndTime <= ChallengeEndDate).ToList());
+            TotalCalories = Calories.CalculateTotalCalories(CurrentUser.Activities.Where(a => a.Date >= ChallengeStartDate && a.Date <= ChallengeEndDate).ToList());
 
             for (int i = 0; i < Disciplines.Count; i++) PieChartData.Add(0);
 
@@ -62,7 +62,7 @@ namespace TheGreatFinChallenge.Models.Views
                 LineChartData[dscpln.NameNormalized] = temp;
             }
 
-            foreach (var ac in CurrentUser.Activities.Where(a => a.StartTime >= ChallengeStartDate && a.EndTime <= ChallengeEndDate))
+            foreach (var ac in CurrentUser.Activities.Where(a => a.Date >= ChallengeStartDate && a.Date <= ChallengeEndDate))
             {
                 List<int> temp;
                 if (!LineChartData.TryGetValue(ac.ActivityType.Discipline.NameNormalized, out temp))
@@ -70,7 +70,7 @@ namespace TheGreatFinChallenge.Models.Views
                     temp = new List<int>();
                     for (int j = 0; j < dates.Count; j++) temp.Add(0);
                 }
-                int day = (ac.StartTime.Day - ChallengeStartDate.Day);
+                int day = (ac.Date.Day - ChallengeStartDate.Day);
 
                 int value = temp[day];
                 temp[day] = ++value;

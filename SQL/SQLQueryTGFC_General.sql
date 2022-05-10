@@ -120,8 +120,8 @@ CREATE TABLE [Activity] (
 	UserId			INT FOREIGN KEY REFERENCES [User](UserId) NOT NULL,
 	ActivityTypeId	INT FOREIGN KEY REFERENCES [ActivityType](ActivityTypeId) NOT NULL,
 	Distance		FLOAT NOT NULL,
-	StartTime		DATETIME NOT NULL,
-	EndTime			DATETIME NOT NULL
+	[Date]			DATETIME NOT NULL,
+	Duration		TIME NOT NULL
 )
 
 CREATE TABLE [Image] (
@@ -200,12 +200,12 @@ VALUES
 --Unique activitytypes
 INSERT INTO [ActivityType]([DisciplineId], [Name], MET, ImageData)
 VALUES 
-(1, 'Analogue bike - 16 to 19 km/h', 7, 'bike.png'),
+(1, 'Analogue bike - 0 to 19 km/h', 7, 'bike.png'),
 (1, 'Analogue bike - 19 to 22 km/h', 8, 'bike.png'),
 (1, 'Analogue bike - 22 to 25 km/h', 10, 'bike.png'),
 (1, 'Analogue bike - 25 to 30 km/h', 12, 'bike.png'),
 (1, 'Analogue bike - 30+ km/h', 16, 'bike.png'),
-(1, 'E-bike - 16 to 19 km/h', 3.5, 'ebike.png'),
+(1, 'E-bike - 0 to 19 km/h', 3.5, 'ebike.png'),
 (1, 'E-bike - 19 to 22 km/h', 4, 'ebike.png'),
 (1, 'E-bike - 22 to 25 km/h', 5, 'ebike.png'),
 (1, 'E-Bike - 25 to 30 km/h', 6, 'ebike.png'),
@@ -251,7 +251,8 @@ VALUES
 
 (10, 'Roller skating', 7, 'rskating.png'),
 (10, 'Inline skating', 9.8, 'iskating.png'),
-(10, 'surfing - Sailing', 3.3, 'surfing.png'),
+(10, 'Surfing - Sailing', 3, 'surfing.png'),
+(10, 'Mountain Climbing', 8, 'surfing.png'),
 
 (11, 'Horse riding', 5.5, 'horse.png');
 

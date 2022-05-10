@@ -39,7 +39,7 @@
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 <b>Total activities</b>
                             </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.CurrentUser.Activities.Where(a => a.StartTime >= Model.ChallengeStartDate && a.EndTime <= Model.ChallengeEndDate).ToList().Count</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.CurrentUser.Activities.Where(a => a.Date >= Model.ChallengeStartDate && a.Date <= Model.ChallengeEndDate).ToList().Count</div>
                         </div>
                         <div class="col-auto">
                             <img style="height: 2.3em; filter: invert(.5);" src="~/img/icons/heart-solid.svg">
@@ -178,7 +178,7 @@
                     <h6 class="m-0 font-weight-bold text-primary">Recent Activities</h6>
                 </div>
                 <div class="card-body">
-                    @if (Model.CurrentUser.Activities.Where(a => a.StartTime >= Model.ChallengeStartDate && a.EndTime <= Model.ChallengeEndDate).ToList().Count != 0)
+                    @if (Model.CurrentUser.Activities.Where(a => a.Date >= Model.ChallengeStartDate && a.Date <= Model.ChallengeEndDate).ToList().Count != 0)
                     {
                         <table class="table table-hover table-sm mb-0" id="tableAll">
                             <thead>
@@ -192,13 +192,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model.CurrentUser.Activities.Where(a => a.StartTime >= Model.ChallengeStartDate && a.EndTime <= Model.ChallengeEndDate).OrderByDescending(a => a.StartTime).ToList())
+                                @foreach (var item in Model.CurrentUser.Activities.Where(a => a.Date >= Model.ChallengeStartDate && a.Date <= Model.ChallengeEndDate).OrderByDescending(a => a.Date).ThenByDescending(a => a.ActivityId).ToList())
                                 {
                                     @*<tr style="cursor:pointer;" onclick="location.href='@url/Activity?ActivityId=@item.pk_ActivityID';">*@
                                     <tr style="cursor:pointer;" onclick="location.href='@Url.Action("Activities", "Account", new { ActivityId = item.ActivityId })'">
                                         <td>@item.ActivityType.Discipline.Name</td>
                                         <td>@item.ActivityType.Name</td>
-                                        <td>@item.StartTime.ToString("dd/MM/yyyy - HH:mm")</td>
+                                        <td>@item.Date.ToString("dd/MM/yyyy")</td>
                                         <td>@(item.Duration.ToString(@"hh\:mm"))</td>
                                         <td>@item.Distance</td>
                                         <td>@item.CalculatedCalories</td>

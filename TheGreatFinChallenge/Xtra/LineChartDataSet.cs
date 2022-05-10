@@ -94,9 +94,9 @@ namespace TheGreatFinChallenge.Xtra
             List<double> res = new List<double>();
             foreach (var date in dates) res.Add(0);
 
-            foreach (var activity in _user.Activities.Where(a => a.StartTime >= _start && a.EndTime <= _end))
+            foreach (var activity in _user.Activities.Where(a => a.Date >= _start && a.Date <= _end))
             {
-                var day = (activity.StartTime.Day - _start.Day);
+                var day = (activity.Date.Day - _start.Day);
                 res[day] = res[day] + 1;
             }
 
@@ -127,9 +127,9 @@ namespace TheGreatFinChallenge.Xtra
             List<double> res = new List<double>();
             foreach (var date in dates) res.Add(0);
 
-            foreach (var activity in _dep.Activities.Where(a => a.StartTime >= _start && a.EndTime <= _end))
+            foreach (var activity in _dep.Activities.Where(a => a.Date >= _start && a.Date <= _end))
             {
-                var day = (activity.StartTime.Day - _start.Day);
+                var day = (activity.Date.Day - _start.Day);
                 res[day] = res[day] + (1 / _dep.Users.Count);
             }
 
@@ -160,9 +160,9 @@ namespace TheGreatFinChallenge.Xtra
             List<double> res = new List<double>();
             foreach (var date in dates) res.Add(0);
 
-            foreach(var activity in _user.Activities.Where(a => a.StartTime >= _start && a.EndTime <= _end))
+            foreach(var activity in _user.Activities.Where(a => a.Date >= _start && a.Date <= _end))
             {
-                var day = (activity.StartTime.Day - _start.Day);
+                var day = (activity.Date.Day - _start.Day);
                 res[day] = res[day] + activity.CalculatedCalories;
             }
             
@@ -193,9 +193,9 @@ namespace TheGreatFinChallenge.Xtra
             List<double> res = new List<double>();
             foreach (var date in dates) res.Add(0);
 
-            foreach (var activity in _dep.Activities.Where(a => a.StartTime >= _start && a.EndTime <= _end))
+            foreach (var activity in _dep.Activities.Where(a => a.Date >= _start && a.Date <= _end))
             {
-                var day = (activity.StartTime.Day - _start.Day);
+                var day = (activity.Date.Day - _start.Day);
                 res[day] = res[day] + (activity.CalculatedCalories / _dep.Users.Count);
             }
 
@@ -226,9 +226,9 @@ namespace TheGreatFinChallenge.Xtra
             List<double> res = new List<double>();
             foreach (var date in dates) res.Add(0);
 
-            foreach (var activity in _user.Activities.Where(a => a.StartTime >= _start && a.EndTime <= _end))
+            foreach (var activity in _user.Activities.Where(a => a.Date >= _start && a.Date <= _end))
             {
-                var day = (activity.StartTime.Day - _start.Day);
+                var day = (activity.Date.Day - _start.Day);
                 res[day] = Math.Round(res[day] + activity.Distance, 2);
             }
 
@@ -259,9 +259,9 @@ namespace TheGreatFinChallenge.Xtra
             List<double> res = new List<double>();
             foreach (var date in dates) res.Add(0);
 
-            foreach (var activity in _dep.Activities.Where(a => a.StartTime >= _start && a.EndTime <= _end))
+            foreach (var activity in _dep.Activities.Where(a => a.Date >= _start && a.Date <= _end))
             {
-                var day = (activity.StartTime.Day - _start.Day);
+                var day = (activity.Date.Day - _start.Day);
                 res[day] = res[day] + (activity.Distance / _dep.Users.Count);
             }
 
@@ -292,9 +292,9 @@ namespace TheGreatFinChallenge.Xtra
             List<double> res = new List<double>();
             foreach (var date in dates) res.Add(0);
 
-            foreach (var activity in _user.Activities.Where(a => a.StartTime >= _start && a.EndTime <= _end))
+            foreach (var activity in _user.Activities.Where(a => a.Date >= _start && a.Date <= _end))
             {
-                var day = (activity.StartTime.Day - _start.Day);
+                var day = (activity.Date.Day - _start.Day);
                 res[day] = res[day] + activity.Duration.TotalMinutes;
             }
 
@@ -325,9 +325,9 @@ namespace TheGreatFinChallenge.Xtra
             List<double> res = new List<double>();
             foreach (var date in dates) res.Add(0);
 
-            foreach (var activity in _dep.Activities.Where(a => a.StartTime >= _start && a.EndTime <= _end))
+            foreach (var activity in _dep.Activities.Where(a => a.Date >= _start && a.Date <= _end))
             {
-                var day = (activity.StartTime.Day - _start.Day);
+                var day = (activity.Date.Day - _start.Day);
                 res[day] = res[day] + (activity.Duration.TotalMinutes / _dep.Users.Count);
             }
 

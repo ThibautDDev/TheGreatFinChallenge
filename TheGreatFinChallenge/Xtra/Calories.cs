@@ -18,7 +18,7 @@ namespace TheGreatFinChallenge.Xtra
         public static int CalculateCalories(Activity activity)
         {
             double met = activity.ActivityType.MET;
-            double minutes = (activity.EndTime - activity.StartTime).TotalMinutes;
+            double minutes = (activity.Duration).TotalMinutes;
             return CalculateCalories(met, minutes);
         }
 
